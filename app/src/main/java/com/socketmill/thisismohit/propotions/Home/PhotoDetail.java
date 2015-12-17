@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -75,12 +77,37 @@ public class PhotoDetail extends AppCompatActivity {
     }
 
 
-    public void  ObjectToFind(String ParsePhotoObjectId,String UserObjectId) {
+    public void  ObjectToFind(String ParsePhotoObjectId,String ParseObjectID) {
+
+        //Find the Parse Object of photo
+        final ParseQuery ActivityObejctQuery = ParseQuery.getQuery("Activity");
+        ParseQuery PhotoObject = ParseQuery.getQuery("Photos") ;
+        PhotoObject.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+        PhotoObject.getInBackground(ParseObjectID, new GetCallback() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+
+                if(e==null){
+
+
+                    ActivityObejctQuery.whereEqualTo("photo", parseObject);
+                    ActivityObejctQuery.whereEqualTo("type","comment");
+                    ActivityObejctQuery.include("fromUser");
+                    ActivityObejctQuery.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+
+                }
+
+            }
+
+
+        });
+
+
+
+
 
        // return ParseQuery<ParseObject>
-       // ParseQuery ActivityObejctQuery = ParseQuery.getQuery("Activity");
 
-       // ActivityObejctQuery.whereEqualTo("toUser", ParseUser.getQuery().whereEqualTo("objectId",UserObjectId));
 
 
 
