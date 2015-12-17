@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Propotions</string>
+
+    <string name="parse_app_id">dWGkmeIID8GkTZD07E3EM4if5Fu7nyVM0Av1WqCd</string>
+    <string name="parse_client_key">QyBJNAvOEsIgTbbKlNNOLw3uFJIWArVMs9Wb2QFQ</string>
+    <string name="action_settings">heelo</string>
+    <string name="title_activity_explore">Explore</string>
+    <string name="title_activity_notification">Notification</string>
+    <string name="title_activity_after_pic_taken_image_comment_adding_class">
+
+        AfterPicTakenImageCommentAddingClass
+    </string>
+    <string name="APP_ID">1526741737644337</string>
+    <string name="title_activity_photo_detail">PhotoDetail</string>
+
+    <string name="hello_world">Hello world!</string>
+
+
 </resources>

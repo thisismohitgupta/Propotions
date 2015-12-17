@@ -1,9 +1,65 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.socketmill.thisismohit.propotions">
 
-    <application android:allowBackup="true" android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher" android:theme="@style/AppTheme">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
+    <uses-feature android:name="android.hardware.camera" />
+
+    <application
+        android:name=".YourApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/APP_ID" />
+        <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="@string/parse_app_id" />
+        <meta-data
+            android:name="com.parse.CLIENT_KEY"
+            android:value="@string/parse_client_key" />
+
+        <activity android:name=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".Videos"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".Explore"
+            android:label="@string/title_activity_explore"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Notification"
+            android:label="@string/title_activity_notification"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".AfterPicTakenImageCommentAddingClass"
+            android:label="@string/title_activity_after_pic_taken_image_comment_adding_class"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Login"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".Profile" />
+        <activity
+            android:name=".Home.PhotoDetail"
+            android:label="@string/title_activity_photo_detail" >
+        </activity>
     </application>
 
 </manifest>

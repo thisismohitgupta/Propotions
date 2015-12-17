@@ -9,7 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/Parse-1.11.0" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/facebook-android-sdk-4.8.2" />
           </set>
         </option>
       </GradleProjectSettings>

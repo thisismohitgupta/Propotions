@@ -1,0 +1,17 @@
+package com.socketmill.thisismohit.propotions;
+
+import android.app.Application;
+
+import com.parse.Parse;
+
+public class YourApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Parse.initialize(this, "id", "key");
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "dWGkmeIID8GkTZD07E3EM4if5Fu7nyVM0Av1WqCd", "QyBJNAvOEsIgTbbKlNNOLw3uFJIWArVMs9Wb2QFQ");
+
+
+    }
+}

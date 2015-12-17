@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/relitiveLayout"
+
+    android:layout_height="match_parent"
+    android:background="@color/BlackBottom"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AfterPicTakenImageCommentAddingClass"
+
+    tools:showIn="@layout/activity_after_pic_taken_image_comment_adding_class">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_top_Upload"
+        android:layout_width="match_parent"
+        android:layout_height="@android:dimen/notification_large_icon_height"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/black">
+
+        <ImageButton
+            android:id="@+id/imgClose_uploadActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:background="@android:drawable/ic_menu_close_clear_cancel"
+            android:padding="20dp" />
+
+        <ImageButton
+            android:id="@+id/imgTickDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_horizontal"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/verification24"
+            android:padding="20dp" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <ImageView
+        android:id="@+id/ImageDisplayForUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_top_Upload"
+
+        android:layout_gravity="center"
+
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="-50dp"
+
+
+        />
+
+    <EditText
+        android:imeOptions="actionDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_below="@+id/ImageDisplayForUpload"
+        android:inputType="text"
+        android:hint="Say something about this Photo"
+
+        android:layout_alignParentLeft="true"
+
+        android:layout_alignParentRight="true"
+         />
+
+</RelativeLayout>
