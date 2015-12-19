@@ -21,7 +21,7 @@ public class Explore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
 
         Toast.makeText(getApplicationContext(), "explore", Toast.LENGTH_SHORT).show();
@@ -30,21 +30,7 @@ public class Explore extends AppCompatActivity {
         NavController.checkIfLoggedInInternal(getApplicationContext());
 
 
-        //ParseQuery Query = ParseQuery.getQuery("Activity");
-        ParseObject follow = ParseObject.create("Activity");
 
-        follow.put("toUser",ParseObject.createWithoutData(ParseUser.class,"J7tLKZaxJP"));
-        follow.put("fromUser",ParseObject.createWithoutData(ParseUser.class,ParseUser.getCurrentUser().getObjectId()));
-
-        follow.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e==null){
-
-                    Log.e("ERROR","fOLLOWED");
-                }
-            }
-        });
 
 
 
@@ -65,6 +51,26 @@ public class Explore extends AppCompatActivity {
         navigation.EXPLORE = true;
         navigation.setNav(getApplicationContext(), toolbar, this);
         return true;
+    }
+
+
+    public void FollowUser (String ObjectIdUserToFollow){
+
+        ParseObject follow = ParseObject.create("Activity");
+
+        follow.put("toUser",ParseObject.createWithoutData(ParseUser.class,ObjectIdUserToFollow));
+        follow.put("fromUser",ParseObject.createWithoutData(ParseUser.class,ParseUser.getCurrentUser().getObjectId()));
+
+        follow.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e==null){
+
+                    Log.e("ERROR","fOLLOWED");
+                }
+            }
+        });
+
     }
 
 
