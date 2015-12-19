@@ -98,6 +98,14 @@ public class PhotoDetail extends AppCompatActivity {
 
                     CommentText.setText(list.get(i).getString("content"));
 
+                    RelativeLayout.LayoutParams commentTextParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    commentTextParam.addRule(RelativeLayout.RIGHT_OF, NameViewText.getId());
+                    CommentText.setLayoutParams(commentTextParam);
+                    RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    nameViewParam.addRule(RelativeLayout.BELOW, R.id.MainImage);
+                    NameViewText.setLayoutParams(nameViewParam);
+
+
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
                     Rl.setLayoutParams(params);
 
@@ -124,15 +132,17 @@ public class PhotoDetail extends AppCompatActivity {
 
         //Find the Parse Object of photo
         final ParseQuery<ParseObject> ActivityObejctQuery = ParseQuery.getQuery("Activity");
-        ParseQuery PhotoObject = ParseQuery.getQuery("Photos") ;
-        PhotoObject.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+        ParseQuery PhotoObject = ParseQuery.getQuery("Photo") ;
+//        PhotoObject.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
 
         try {
           ParseObject  parseObject =  PhotoObject.get(ParsePhotoObjectId);
+            Log.e("ERROR", parseObject.getObjectId() + "fuck this shit");
             ActivityObejctQuery.whereEqualTo("photo", parseObject);
-            ActivityObejctQuery.whereEqualTo("type", "comment");
             ActivityObejctQuery.include("fromUser");
-            ActivityObejctQuery.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+            ActivityObejctQuery.whereEqualTo("type", "comment");
+
+            //ActivityObejctQuery.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
 
 
         }catch (Exception e){

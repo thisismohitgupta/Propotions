@@ -43,14 +43,26 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/MainImage"
+            android:layout_below="@+id/MainImage"
             android:id="@+id/commentContainer"
             >
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="add a comment"
+                android:id="@+id/comment"
 
+
+                />
 
 
         </LinearLayout>
+
     </RelativeLayout>
+
     </ScrollView>
+
+
 </RelativeLayout>
