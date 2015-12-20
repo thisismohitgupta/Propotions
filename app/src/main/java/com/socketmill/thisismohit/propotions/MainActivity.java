@@ -1,6 +1,7 @@
 package com.socketmill.thisismohit.propotions;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.util.LruCache;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,6 +24,8 @@ import android.widget.Toast;
 
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -42,6 +46,7 @@ import com.socketmill.thisismohit.propotions.Home.homeView;
 public class MainActivity extends AppCompatActivity {
 
      LinearLayout ll ;
+    boolean likeFlag ;
     private static LruCache<String,Bitmap> MemCache ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         MainQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
-            public void done(List<ParseObject> list, ParseException e) {
+            public void done(final List<ParseObject> list, ParseException e) {
                 if (e == null) {
                     if (list.isEmpty()) {
                         Log.e("ERROR", "PAPU");
@@ -181,14 +186,34 @@ public class MainActivity extends AppCompatActivity {
                                 final ImageView LikeButtons = LikeButtonReff.get();
                                 final ImageView CommentButtons = CommentButtonReff.get();
                                 final ImageView ShareButtons = ShareButtonReff.get();
-                                LikeButton.setImageResource(R.drawable.loving34);
+
+                                likeFlag = picLikedorNotCheck(list.get(i),getApplicationContext(),LikeButtonReff);
+
+
                                 CommentButton.setImageResource(R.drawable.chat20);
                                 ShareButton.setImageResource(R.drawable.share11);
                                 //////
+                                final int tempI = i ;
 
                                 LikeButtons.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+
+                                        if (likeFlag == true) {
+                                            LikeButton.setImageResource(R.drawable.heart13);
+                                            likeFlag = true ;
+                                            //user has liked the photo :)
+                                            likeThatpic(list.get(tempI),getApplicationContext());
+
+
+                                        }else {
+                                            LikeButton.setImageResource(R.drawable.loving34);
+                                            likeFlag= false ;
+                                            //user has unliked the photo :(
+                                           unlikeThatpic(list.get(tempI),getApplicationContext());
+
+                                        }
+
 
                                         Toast.makeText(getApplicationContext(), String.valueOf(LikeButton.getId()), Toast.LENGTH_SHORT).show();
 
@@ -286,5 +311,100 @@ public class MainActivity extends AppCompatActivity {
         return megaQuery ;
 
     }
+
+    public static void likeThatpic (ParseObject photoObject,Context context){
+
+        ParseObject likeActivity = new ParseObject("Activity");
+        likeActivity.put("type", "like");
+        likeActivity.put("fromUser",ParseUser.getCurrentUser());
+        likeActivity.put("toUser", photoObject.getParseUser("user"));
+        likeActivity.put("photo", photoObject);
+
+        //set up the ACL
+        ParseACL likeAcl = new ParseACL(ParseUser.getCurrentUser());
+        likeAcl.setPublicReadAccess(true);
+        likeActivity.setACL(likeAcl);
+        likeActivity.saveInBackground();
+
+        Toast.makeText(context,"liked",Toast.LENGTH_SHORT).show();
+
+    }
+    public static void unlikeThatpic (ParseObject photoObject,final Context context){
+        ParseQuery<ParseObject> queryExistingLikes = ParseQuery.getQuery("Activity");
+        queryExistingLikes.whereEqualTo("photo", photoObject);
+        queryExistingLikes.whereEqualTo("type", "like");
+        queryExistingLikes.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+        queryExistingLikes.whereEqualTo("toUser", photoObject.getParseUser("user"));
+        Toast.makeText(context, "Ungagaliked", Toast.LENGTH_SHORT).show();
+
+        queryExistingLikes.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e == null) {
+                    try {
+
+                        list.get(0).delete();
+                        list.get(0).saveInBackground();
+                        Toast.makeText(context, "Unliked", Toast.LENGTH_SHORT).show();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+
+                    Log.e("ERROR", e.getMessage());
+                }
+            }
+        });
+
+
+
+    }
+    public static boolean picLikedorNotCheck (ParseObject photoObject,Context context,final WeakReference<ImageView> imageButtonReff ){
+        final boolean likedorNot[] = new boolean[1] ;
+        likedorNot[0] = false;
+
+        ParseQuery<ParseObject> queryExistingLikes = ParseQuery.getQuery("Activity");
+        queryExistingLikes.whereEqualTo("photo",photoObject);
+        queryExistingLikes.whereEqualTo("type","like");
+        queryExistingLikes.whereEqualTo("fromUser",ParseUser.getCurrentUser());
+        queryExistingLikes.whereEqualTo("toUser", photoObject.getParseUser("user"));
+        Toast.makeText(context, "Ungagaliked", Toast.LENGTH_SHORT).show();
+
+        queryExistingLikes.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e == null) {
+
+                    if (!list.isEmpty()) {
+
+                        ImageView butt = imageButtonReff.get() ;
+
+                        butt.setImageResource(R.drawable.heart13);
+
+
+                        likedorNot[0] = true ;
+
+
+
+
+
+                    } else {
+                        ImageView butt = imageButtonReff.get() ;
+
+                        butt.setImageResource(R.drawable.loving34);
+                        likedorNot[0] = false;
+                    }
+
+                }
+            }
+        });
+
+
+
+ return likedorNot[0];
+
+    }
+
+
 
 }

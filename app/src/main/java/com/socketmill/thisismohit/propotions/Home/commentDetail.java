@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -45,6 +47,7 @@ public class commentDetail extends AppCompatActivity {
         setContentView(R.layout.commentfragment);
 
         getSupportActionBar().setTitle("Comments");
+        handler= new Handler();
 
        submitComment = (Button)findViewById(R.id.submitComment);
         Comment = (EditText)findViewById(R.id.CommentAdd);
@@ -55,21 +58,33 @@ public class commentDetail extends AppCompatActivity {
 
 
                 if(Comment!=null){
-                    if(Comment.getText().toString().equals("")  ){}else {
+                    if(Comment.getText().toString().trim().equals("")  ){}else {
+                        String comment = Comment.getText().toString().trim() ;
+                        Comment.setText("");
                         ParseObject commentActivity = new ParseObject("Activity");
                         commentActivity.put("type","comment");
-                        commentActivity.put("content",Comment.getText().toString());
+                        commentActivity.put("content",comment);
                         try {
                             ParseQuery PhotoObject = ParseQuery.getQuery("Photo") ;
                             ParseObject parseObject = PhotoObject.get(getIntent().getStringExtra("PhotoId"));
+                            commentActivity.put("toUser", parseObject.getParseUser("user"));
                             commentActivity.put("fromUser", ParseUser.getCurrentUser());
-                            commentActivity.put("photo",parseObject);
+                            commentActivity.put("photo", parseObject);
+                            ParseACL acl = new ParseACL(ParseUser.getCurrentUser()) ;
+                            acl.setPublicReadAccess(true);
+                            acl.setWriteAccess(parseObject.getParseUser("user"),true);
+                            commentActivity.setACL(acl);
                             commentActivity.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
                                    // Toast.makeText(getApplicationContext(),"Comment Added",Toast.LENGTH_SHORT).show();
-                                    Comment.setText("");
-                                    findcomments();
+
+
+                                    if(e!=null&&e.getCode() == 101){
+                                    //  apologize to user since photo is deleted and comment not posted
+
+                                    }
+
                                 }
                             });
                         }catch (Exception e){
@@ -216,7 +231,7 @@ public class commentDetail extends AppCompatActivity {
                         }
 
                     }
-                },5000);
+                },15000);
 
 
             }

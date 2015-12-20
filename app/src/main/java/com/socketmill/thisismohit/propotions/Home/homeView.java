@@ -54,6 +54,7 @@ public class homeView extends AsyncTask<String, Void, String> {
     byte[] dataMain ;
     byte[] datapro ;
     String Username ;
+    boolean likeFlag;
     
     public homeView(ParseObject _photoObjec,WeakReference<ImageView> imageView,WeakReference<ImageView> profileImageView,WeakReference<TextView> nameView,Context _context,WeakReference<ImageView> _LikeButtonReff,WeakReference<ImageView> _CommentButtReff,WeakReference<ImageView>_ShareButtonReff){
 
@@ -171,6 +172,15 @@ public class homeView extends AsyncTask<String, Void, String> {
                 final ImageView CommentButton = CommentButtonReff.get();
                 final ImageView ShareButton = ShareButtonReff.get();
                  LikeButton.setImageResource(R.drawable.loving34);
+                likeFlag = MainActivity.picLikedorNotCheck(photoObject, context, LikeButtonReff);
+
+                if(likeFlag == true) {
+                    LikeButton.setImageResource(R.drawable.loving34);
+                }else {
+
+                    LikeButton.setImageResource(R.drawable.heart13);
+
+                }
                 CommentButton.setImageResource(R.drawable.chat20);
                 ShareButton.setImageResource(R.drawable.share11);
                 //////
@@ -179,7 +189,24 @@ public class homeView extends AsyncTask<String, Void, String> {
                     @Override
                     public void onClick(View v) {
 
-                        Toast.makeText(context, String.valueOf(LikeButton.getId()), Toast.LENGTH_SHORT).show();
+                        if (likeFlag == false) {
+                            LikeButton.setImageResource(R.drawable.heart13);
+                            likeFlag = true ;
+                            //user has liked the photo :)
+
+                            MainActivity.likeThatpic(photoObject,context);
+
+
+                        }else {
+                            LikeButton.setImageResource(R.drawable.loving34);
+                            likeFlag= false ;
+                            //user has unliked the photo :(
+                            MainActivity.unlikeThatpic(photoObject, context);
+
+                        }
+
+
+                            Toast.makeText(context, String.valueOf(LikeButton.getId()), Toast.LENGTH_SHORT).show();
 
                     }
                 });

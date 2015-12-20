@@ -64,7 +64,7 @@
         <activity
             android:name=".Home.commentDetail"
             android:label="@string/title_activity_photo_detail"
-            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:windowSoftInputMode="stateVisible"
             >
 
         </activity>
