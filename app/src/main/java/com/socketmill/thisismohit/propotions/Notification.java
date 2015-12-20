@@ -6,6 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.List;
+
 
 public class Notification extends AppCompatActivity {
 
@@ -16,8 +24,21 @@ public class Notification extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         getSupportActionBar().hide();
 
+
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedInInternal(getApplicationContext());
+
+
+        ParseQuery<ParseObject> query = maketheNotimaketheNotificationQueryficationQuery();
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if(e==null){
+
+                }
+            }
+        });
 
 
     }
@@ -39,6 +60,17 @@ public class Notification extends AppCompatActivity {
         return true;
     }
 
+    public static ParseQuery<ParseObject> maketheNotimaketheNotificationQueryficationQuery(){
+
+        ParseQuery<ParseObject> NotificationQUery = new ParseQuery("Activity");
+        NotificationQUery.whereEqualTo("toUser", ParseUser.getCurrentUser());
+        NotificationQUery.whereNotEqualTo("fromUser", ParseUser.getCurrentUser());
+        NotificationQUery.whereExists("fromUser");
+        NotificationQUery.include("fromUser");
+        NotificationQUery.orderByAscending("createdAt");
+
+        return NotificationQUery;
+    }
 
 }
 
