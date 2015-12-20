@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.socketmill.thisismohit.propotions.Home.PhotoDetail;
+import com.socketmill.thisismohit.propotions.Home.commentDetail;
 import com.socketmill.thisismohit.propotions.Home.homeView;
 
 
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
 
-                                        Intent i = new Intent(getApplicationContext(), PhotoDetail.class);
+                                        Intent i = new Intent(getApplicationContext(), commentDetail.class);
                                         i.putExtra("PhotoId",ParseObjectId);
                                         i.putExtra("UserThumb",ParseUsername);
                                         i.putExtra("UserObjectID",ParseUserObjectId);

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,12 +26,18 @@ import com.parse.SaveCallback;
 import com.socketmill.thisismohit.propotions.Login;
 import com.socketmill.thisismohit.propotions.R;
 
+import java.util.Date;
 import java.util.List;
+
 
 public class commentDetail extends AppCompatActivity {
 
     EditText Comment ;
     Button submitComment ;
+    Date LastCommentDate ;
+    private static Handler handler ;
+    Boolean isRunning;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +67,13 @@ public class commentDetail extends AppCompatActivity {
                             commentActivity.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    Toast.makeText(getApplicationContext(),"Comment Added",Toast.LENGTH_SHORT).show();
+                                   // Toast.makeText(getApplicationContext(),"Comment Added",Toast.LENGTH_SHORT).show();
+                                    Comment.setText("");
+                                    findcomments();
                                 }
                             });
                         }catch (Exception e){
-                            Toast.makeText(getApplicationContext(),"Comment not Added",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Comment Could not be Added",Toast.LENGTH_SHORT).show();
 
 
                         }
@@ -76,59 +85,8 @@ public class commentDetail extends AppCompatActivity {
             }
         });
 
+        findcomments();
 
-
-        String ParseObjectID = getIntent().getStringExtra("PhotoId") ;
-        final LinearLayout LL = (LinearLayout)findViewById(R.id.commentContainer);
-
-        ParseQuery<ParseObject> CommentQuery = ObjectToFind(ParseObjectID);
-
-        CommentQuery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e) {
-
-                for (int i = 0; i < list.size(); i++) {
-
-
-                    RelativeLayout Rl = new RelativeLayout(getApplicationContext());
-                    TextView NameViewText = new TextView(commentDetail.this);
-                    TextView CommentText = new TextView(commentDetail.this);
-
-                    NameViewText.setTextColor(Color.BLUE);
-                    NameViewText.setTextSize(12);
-                    NameViewText.setId((i * i) + 1);
-
-                    CommentText.setTextColor(Color.BLACK);
-                    CommentText.setTextSize(12);
-                    NameViewText.setId((i * i * i) + 1);
-                    NameViewText.setText(list.get(i).getParseUser("fromUser").getString("displayName"));
-
-                    CommentText.setText(list.get(i).getString("content"));
-
-                    RelativeLayout.LayoutParams commentTextParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    commentTextParam.addRule(RelativeLayout.RIGHT_OF, NameViewText.getId());
-                    CommentText.setLayoutParams(commentTextParam);
-                    RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    nameViewParam.addRule(RelativeLayout.BELOW, R.id.MainImage);
-                    NameViewText.setLayoutParams(nameViewParam);
-
-
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    Rl.setLayoutParams(params);
-
-                    Rl.addView(NameViewText);
-                    Rl.addView(CommentText);
-                    LL.addView(Rl);
-
-
-
-
-                }
-
-            }
-
-
-        });
 
 
 
@@ -144,13 +102,23 @@ public class commentDetail extends AppCompatActivity {
 
         try {
           ParseObject  parseObject =  PhotoObject.get(ParsePhotoObjectId);
-            Log.e("ERROR", parseObject.getObjectId() + "fuck this shit");
-            ActivityObejctQuery.whereEqualTo("photo", parseObject);
-            ActivityObejctQuery.include("fromUser");
-            ActivityObejctQuery.whereEqualTo("type", "comment");
 
-            //ActivityObejctQuery.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+            if (LastCommentDate != null) {
+                ActivityObejctQuery.whereEqualTo("photo", parseObject);
+                ActivityObejctQuery.whereGreaterThan("createdAt",LastCommentDate);
+                ActivityObejctQuery.include("fromUser");
+                ActivityObejctQuery.whereEqualTo("type", "comment");
 
+
+                //ActivityObejctQuery.setCachePolicy(ParseQuery.CachePolicy.NETWORK_ELSE_CACHE);
+
+            }else {
+
+                ActivityObejctQuery.whereEqualTo("photo", parseObject);
+
+                ActivityObejctQuery.include("fromUser");
+                ActivityObejctQuery.whereEqualTo("type", "comment");
+            }
 
         }catch (Exception e){
 
@@ -164,6 +132,103 @@ public class commentDetail extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isRunning=true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(isRunning){
+            isRunning = false ;
+        }
+
+    }
+
+
+    public void findcomments (){
+
+
+        String ParseObjectID = getIntent().getStringExtra("PhotoId") ;
+        final LinearLayout LL = (LinearLayout)findViewById(R.id.commentlayout);
+
+        ParseQuery<ParseObject> CommentQuery = ObjectToFind(ParseObjectID);
+
+        CommentQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+
+                if(e==null){
+
+                    for (int i = 0; i < list.size(); i++) {
+
+                        if(LastCommentDate == null || LastCommentDate.before(list.get(i).getCreatedAt() )){
+
+                            LastCommentDate = list.get(i).getCreatedAt();
+                        }
+
+                        Toast.makeText(getApplicationContext(),String.valueOf(i),Toast.LENGTH_SHORT).show();
+
+                        RelativeLayout Rl = new RelativeLayout(getApplicationContext());
+                        TextView NameViewText = new TextView(commentDetail.this);
+                        TextView CommentText = new TextView(commentDetail.this);
+
+                        NameViewText.setTextColor(Color.BLUE);
+                        NameViewText.setTextSize(12);
+                        NameViewText.setId((i * i) + 1);
+
+                        CommentText.setTextColor(Color.BLACK);
+                        CommentText.setTextSize(12);
+                        NameViewText.setId((i * i * i) + 1);
+                        NameViewText.setText(list.get(i).getParseUser("fromUser").getString("displayName"));
+
+                        CommentText.setText(list.get(i).getString("content"));
+
+                        RelativeLayout.LayoutParams commentTextParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        commentTextParam.addRule(RelativeLayout.RIGHT_OF, NameViewText.getId());
+                        CommentText.setLayoutParams(commentTextParam);
+                        RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                        NameViewText.setLayoutParams(nameViewParam);
+
+
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        Rl.setLayoutParams(params);
+
+                        Rl.addView(NameViewText);
+                        Rl.addView(CommentText);
+                        LL.addView(Rl);
+
+
+                    }
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(isRunning){
+                            findcomments();
+
+                        }
+
+                    }
+                },5000);
+
+
+            }
+
+
+        });
+
+
+    }
+
+
+
 
 
 }

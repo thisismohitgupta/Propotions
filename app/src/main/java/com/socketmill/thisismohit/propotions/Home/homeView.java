@@ -196,7 +196,7 @@ public class homeView extends AsyncTask<String, Void, String> {
                     @Override
                     public void onClick(View v) {
 
-                        Intent i = new Intent(context, PhotoDetail.class);
+                        Intent i = new Intent(context, commentDetail.class);
                         i.putExtra("PhotoId", photoObject.getObjectId());
                         i.putExtra("UserThumb", photoObject.getParseUser("user").getUsername());
                         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
