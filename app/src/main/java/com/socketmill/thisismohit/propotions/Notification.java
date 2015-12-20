@@ -69,6 +69,7 @@ public class Notification extends AppCompatActivity {
         NotificationQUery.include("fromUser");
         NotificationQUery.orderByAscending("createdAt");
 
+
         return NotificationQUery;
     }
 
