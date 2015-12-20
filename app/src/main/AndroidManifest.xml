@@ -59,6 +59,14 @@
         <activity
             android:name=".Home.PhotoDetail"
             android:label="@string/title_activity_photo_detail" >
+
+        </activity>
+        <activity
+            android:name=".Home.commentDetail"
+            android:label="@string/title_activity_photo_detail"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            >
+
         </activity>
     </application>
 
