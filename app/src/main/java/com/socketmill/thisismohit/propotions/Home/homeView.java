@@ -241,7 +241,7 @@ public class homeView extends AsyncTask<String, Void, String> {
             }else {
                 ImageView proimageView = profileViewReference.get();
                 proimageView.setImageBitmap(bitmapArray[1]);
-                Login.setBitmapMemoryCache(photoObject.getObjectId() + "thumb", bitmapArray[1]);
+                Login.setBitmapMemoryCache(photoObject.getParseUser("user").getUsername(), bitmapArray[1]);
 
                 TextView textName = nameViewReference.get() ;
                 if(Username != null) {

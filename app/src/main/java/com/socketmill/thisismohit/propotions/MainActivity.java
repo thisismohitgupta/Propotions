@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
 
-                                        if (likeFlag == true) {
+                                        if (!picLikedorNotCheck(list.get(tempI),getApplicationContext(),LikeButtonReff)) {
                                             LikeButton.setImageResource(R.drawable.heart13);
                                             likeFlag = true ;
                                             //user has liked the photo :)
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         }else {
                                             LikeButton.setImageResource(R.drawable.loving34);
-                                            likeFlag= false ;
+
                                             //user has unliked the photo :(
                                            unlikeThatpic(list.get(tempI),getApplicationContext());
 

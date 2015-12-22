@@ -13,6 +13,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/GreenTop"
 
+
         >
 
 
@@ -86,7 +87,19 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/toolbar_Bottom_nav"
         android:layout_below="@+id/toolbar_top_nav">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/notificationLL"
 
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+        </ScrollView>
 
     </RelativeLayout>
 
