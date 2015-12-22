@@ -31,7 +31,10 @@ import com.parse.ParseUser;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 public class Login extends AppCompatActivity {
@@ -47,8 +50,9 @@ public class Login extends AppCompatActivity {
     com.socketmill.thisismohit.propotions.widget.GifMovieView gifMovieView;
     private static LruCache<String, Bitmap> MemCache;
 
-    private static LruCache<String, String> MemCacheString;
+
     private static SimpleDiskCache StringCache ;
+    private static SimpleDiskCache bitmapCache ;
 
     SimpleDiskCache Bitmapcache ;
 
@@ -64,20 +68,18 @@ public class Login extends AppCompatActivity {
         //final int cacheSize = maxMemorySize /10 ;
         final int memClass = ((ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
         final int cacheSize = 1024 * 1024 * memClass;
+        Log.e("Error","memory allocated "+ String.valueOf(cacheSize));
         try {
-            StringCache = SimpleDiskCache.open (getCacheDir(), 1, (long) cacheSize / 8 ); // 10 MB
+            StringCache = SimpleDiskCache.open (getFilesDir(), 1, (long) cacheSize  / 3); // 10 MB
+            //bitmapCache = SimpleDiskCache.open (getFilesDir(), 1, (long) cacheSize  ); // 10 MB
         } catch (IOException e) {
+
+            Log.e("ERROR","FUCKED UP");
             e.printStackTrace();
         }
 
 
-        MemCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount() / 1024;
 
-            }
-        };
 
         setContentView(R.layout.activity_login);
 
@@ -258,34 +260,66 @@ public class Login extends AppCompatActivity {
 
 
     public static Bitmap getBitmapFromMemoryCache(String key) {
-        Log.e("ERROR", "Done with ease");
 
-        return MemCache.get(key);
+
+        Bitmap hello = null ;
+        try {
+            hello = StringCache.getBitmap(key).getBitmap();
+        } catch (Exception e) {
+
+
+
+        }
+        return hello;
 
     }
 
     public static void setBitmapMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemoryCache(key) == null) {
 
-            Log.e("ERROR", "Image Set to cache");
-            MemCache.put(key, bitmap);
+
+
+            try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                byte[] bitmapdata = bos.toByteArray();
+                bos.close();
+                InputStream bs = new ByteArrayInputStream(bitmapdata);
+                StringCache.put(key, bs);
+                bs.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
     }
 
-    public static String getStringFromMemoryCache(String key) throws IOException {
-        Log.e("ERROR", "Done with ease");
+    public static String getStringFromMemoryCache(String key) {
 
-        return StringCache.getString(key).getString();
+        String hello = null;
+        try {
+            hello = StringCache.getString(key).getString();
+        } catch (Exception e) {
+
+
+
+        }
+
+        return hello;
 
     }
 
-    public static void setStringMemoryCache(String key, String value) throws IOException {
-        if (StringCache.getString(key).getString() == null) {
+    public static void setStringMemoryCache(String key, String value)  {
+        try {
+            if (getStringFromMemoryCache(key) == null) {
 
-            Log.e("ERROR", "name Set to cache");
-            StringCache.put(key, value);
+                Log.e("ERROR", "name Set to cache");
+                StringCache.put(key, value);
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

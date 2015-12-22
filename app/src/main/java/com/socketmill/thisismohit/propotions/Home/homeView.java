@@ -86,6 +86,7 @@ public class homeView extends AsyncTask<String, Void, String> {
         ParseFile fileObject = (ParseFile)photoObject.get("image");
         try {
             dataMain =  fileObject.getData() ;
+            Log.e("ERROR","Images Were Downloaded :(");
             if(dataMain!= null) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 1;
@@ -110,6 +111,7 @@ public class homeView extends AsyncTask<String, Void, String> {
             ParseFile profilePicThumb = user.getParseFile("profilePictureSmall");
 
             try {
+
                 datapro = profilePicThumb.getData();
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -163,7 +165,7 @@ public class homeView extends AsyncTask<String, Void, String> {
                 Drawable drawable = new BitmapDrawable(context.getResources(),bitmapArray[0]) ;
                 //imageView.scale
                 imageView.setBackground(drawable);
-                Log.e("ERROR", "IMage is loaded");
+
 
 
 

@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             public void done(final List<ParseObject> list, ParseException e) {
                 if (e == null) {
                     if (list.isEmpty()) {
-                        Log.e("ERROR", "PAPU");
+
                     } else {
                         for (int i = 0; i < list.size(); i++) {
                             RelativeLayout Rl = new RelativeLayout(getApplicationContext());
@@ -160,11 +160,15 @@ public class MainActivity extends AppCompatActivity {
                             String ProfileName = Login.getStringFromMemoryCache(list.get(i).getParseUser("user").getUsername()+"profileName");
 
                             if (bitmaps == null) {
+
+                                Log.e("Error","Bitmap is null");
                                 homeView myhome = new homeView(list.get(i), imageViewReference, ProfilePicReff, NameTag, MainActivity.this, LikeButtonReff, CommentButtonReff, ShareButtonReff);
                                 myhome.execute();
 
                             } else {
 
+
+                                Log.e("Error","Bitmap is not null");
                                 Drawable drawable = new BitmapDrawable(getApplicationContext().getResources(), bitmaps);
                                 Drawable drawablePro = new BitmapDrawable(getApplicationContext().getResources(), ProThumb);
                                 //imageView.scale
@@ -179,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                                Log.e("ERROR", "Cache Bitmap");
+
 
 
                                 //Perfect space for some optimization
@@ -251,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                             Toast.makeText(getApplicationContext(), list.get(i).getObjectId(), Toast.LENGTH_LONG);
-                            Log.e("ERROR", list.get(i).getObjectId());
+
                         }
 
                         }
