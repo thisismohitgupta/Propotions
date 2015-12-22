@@ -31,6 +31,7 @@ import com.parse.ParseUser;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class Login extends AppCompatActivity {
@@ -47,6 +48,9 @@ public class Login extends AppCompatActivity {
     private static LruCache<String, Bitmap> MemCache;
 
     private static LruCache<String, String> MemCacheString;
+    private static SimpleDiskCache StringCache ;
+
+    SimpleDiskCache Bitmapcache ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +62,15 @@ public class Login extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         //final int maxMemorySize = (int)Runtime.getRuntime().maxMemory()/1024 ;
         //final int cacheSize = maxMemorySize /10 ;
-
         final int memClass = ((ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
         final int cacheSize = 1024 * 1024 * memClass;
+        try {
+            StringCache = SimpleDiskCache.open (getCacheDir(), 1, (long) cacheSize / 8 ); // 10 MB
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         MemCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -68,20 +78,7 @@ public class Login extends AppCompatActivity {
 
             }
         };
-        MemCacheString = new LruCache<String, String>(cacheSize / 8) {
-            @Override
-            protected int sizeOf(String key, String value) {
-                try {
 
-                    return value.getBytes("UTF-8").length;
-                } catch (Exception e) {
-
-                    return value.length() * 2;
-
-                }
-
-            }
-        };
         setContentView(R.layout.activity_login);
 
 
@@ -276,18 +273,18 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public static String getStringFromMemoryCache(String key) {
+    public static String getStringFromMemoryCache(String key) throws IOException {
         Log.e("ERROR", "Done with ease");
 
-        return MemCacheString.get(key);
+        return StringCache.getString(key).getString();
 
     }
 
-    public static void setStringMemoryCache(String key, String value) {
-        if (getStringFromMemoryCache(key) == null) {
+    public static void setStringMemoryCache(String key, String value) throws IOException {
+        if (StringCache.getString(key).getString() == null) {
 
             Log.e("ERROR", "name Set to cache");
-            MemCacheString.put(key, value);
+            StringCache.put(key, value);
 
         }
     }
