@@ -231,7 +231,7 @@ public class commentDetail extends AppCompatActivity {
                         }
 
                     }
-                },15000);
+                },10000);
 
 
             }

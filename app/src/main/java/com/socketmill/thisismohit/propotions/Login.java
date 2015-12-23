@@ -8,10 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.LruCache;
-import android.view.MotionEvent;
+
 import android.view.View;
-import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -42,8 +40,6 @@ public class Login extends AppCompatActivity {
     CallbackManager callbackManager;
     String email;
 
-    ImageView viewIm;
-    WebView Wview;
 
     ProgressBar progressBar;
 

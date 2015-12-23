@@ -8,14 +8,14 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.sax.RootElement;
+
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.LruCache;
+
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
+
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -32,13 +32,14 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 
-import org.w3c.dom.Comment;
+
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.socketmill.thisismohit.propotions.Home.PhotoDetail;
+
+
 import com.socketmill.thisismohit.propotions.Home.commentDetail;
 import com.socketmill.thisismohit.propotions.Home.homeView;
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
      LinearLayout ll ;
     boolean likeFlag ;
-    private static LruCache<String,Bitmap> MemCache ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
                             RelativeLayout UnderPhoto = new RelativeLayout(MainActivity.this);
                             RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            //RLParams.addRule(RelativeLayout);
+
                             Rl.setLayoutParams(RLParams);
 
                             Rl.setBackgroundColor(Color.WHITE);
@@ -286,9 +287,7 @@ public class MainActivity extends AppCompatActivity {
     public ParseQuery<ParseObject> PhotosToShowQueryMake() {
 
 
-        //First query for Users all followed friend's photos
 
-        //FIRST find all the users , current user has followed from the activity class
         ParseQuery FollowingActivityQuery = ParseQuery.getQuery("Activity");
         FollowingActivityQuery.whereEqualTo("type", "follow");
         FollowingActivityQuery.whereEqualTo("fromUser", ParseUser.getCurrentUser());
@@ -405,10 +404,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
- return likedorNot[0];
+
+        return likedorNot[0];
 
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 }
