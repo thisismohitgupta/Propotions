@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
             int mViewsCount = savedInstanceState.getInt("mViewsCount");;
             for(int i = 0; i <= mViewsCount;i++) {
                 View view = mViews.get(i);
