@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
      LinearLayout ll ;
     boolean likeFlag ;
 
+    private List<View> mViews= new ArrayList<View>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,6 +143,13 @@ public class MainActivity extends AppCompatActivity {
                             final WeakReference<ImageView> LikeButtonReff = new WeakReference<ImageView>(LikeButton);
                             final WeakReference<ImageView> CommentButtonReff = new WeakReference<ImageView>(CommentButton);
                             final WeakReference<ImageView> ShareButtonReff = new WeakReference<ImageView>(ShareButton);
+
+
+
+
+                            mViews.add(imageView);
+
+
 
 
                             Rl.addView(profilePicView);
@@ -413,7 +421,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        int mViewsCount = 0;
+        for(View view : mViews)
+        {
+            outState.putInt("mViewId_" + mViewsCount, view.getId());
+            mViewsCount++;
+        }
+
+        outState.putInt("mViewsCount", mViewsCount);
     }
+
+}
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
