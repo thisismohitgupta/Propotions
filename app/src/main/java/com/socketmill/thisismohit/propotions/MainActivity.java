@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        if (savedInstanceState == null){
+            Log.e("ERROR","nul is the instance state");
+        }else {
+            Log.e("ERROR","instance is ready to be loaded");
+        }
 
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
@@ -190,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
                                 viss.setBackground(drawable);
                                 vissL.setBackground(drawablePro);
 
+
+                                bitmaps= null ;
 
 
 
@@ -420,6 +427,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        Log.e("ERROR","On saved ran niggga");
         super.onSaveInstanceState(outState);
         int mViewsCount = 0;
         for(View view : mViews)
@@ -435,6 +443,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+
         super.onRestoreInstanceState(savedInstanceState);
+
+        Log.e("ERROR", "On restore ran niggga");
     }
+    
 }

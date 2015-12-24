@@ -258,15 +258,15 @@ public class Login extends AppCompatActivity {
     public static Bitmap getBitmapFromMemoryCache(String key) {
 
 
-        Bitmap hello = null ;
+
         try {
-            hello = StringCache.getBitmap(key).getBitmap();
+            return StringCache.getBitmap(key).getBitmap();
         } catch (Exception e) {
 
 
 
         }
-        return hello;
+        return  null;
 
     }
 
@@ -282,6 +282,8 @@ public class Login extends AppCompatActivity {
                 bos.close();
                 InputStream bs = new ByteArrayInputStream(bitmapdata);
                 StringCache.put(key, bs);
+                bitmapdata = null ;
+                bitmap = null ;
                 bs.close();
 
             } catch (IOException e) {
