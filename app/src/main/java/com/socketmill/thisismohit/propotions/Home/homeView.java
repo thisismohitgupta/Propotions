@@ -167,8 +167,6 @@ public class homeView extends AsyncTask<String, Void, String> {
                 imageView.setBackground(drawable);
 
 
-
-
                 //Perfect space for some optimization
                final ImageView LikeButton = LikeButtonReff.get();
                 final ImageView CommentButton = CommentButtonReff.get();

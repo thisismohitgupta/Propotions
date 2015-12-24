@@ -23,6 +23,7 @@ import java.lang.ref.WeakReference;
 
     private WeakReference<ImageView> photoThumbnailreff;
 
+
     Bitmap thumbPro ;
     Bitmap thumbPhoto ;
     String PhotoId ;

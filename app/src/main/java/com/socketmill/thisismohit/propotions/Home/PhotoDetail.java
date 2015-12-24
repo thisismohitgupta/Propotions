@@ -114,8 +114,6 @@ public class PhotoDetail extends AppCompatActivity {
                     LL.addView(Rl);
 
 
-
-
                 }
 
             }
