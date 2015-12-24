@@ -53,240 +53,257 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-        if (savedInstanceState == null){
-            Log.e("ERROR","nul is the instance state");
-        }else {
-            Log.e("ERROR","instance is ready to be loaded");
-        }
-
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        ll = (LinearLayout)findViewById(R.id.mainActivityLinearLayout);
+        ll = (LinearLayout) findViewById(R.id.mainActivityLinearLayout);
 
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedInInternal(getApplicationContext());
 
-        ParseQuery<ParseObject> MainQuery = this.PhotosToShowQueryMake();
-
-        MainQuery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(final List<ParseObject> list, ParseException e) {
-                if (e == null) {
-                    if (list.isEmpty()) {
-
-                    } else {
-                        for (int i = 0; i < list.size(); i++) {
-                            RelativeLayout Rl = new RelativeLayout(getApplicationContext());
-                            final ImageView imageView = new ImageView(MainActivity.this);
-                            ImageView profilePicView = new ImageView(MainActivity.this);
-                            TextView NameViewText = new TextView(MainActivity.this);
-                            final ImageView ShareButton = new ImageView(MainActivity.this);
-                            final ImageView LikeButton = new ImageView(MainActivity.this);
-                            final ImageView CommentButton = new ImageView(MainActivity.this);
 
 
-                            RelativeLayout UnderPhoto = new RelativeLayout(MainActivity.this);
-                            RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                            Rl.setLayoutParams(RLParams);
-
-                            Rl.setBackgroundColor(Color.WHITE);
-
-                            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(getApplicationContext().getResources().getDisplayMetrics().widthPixels, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            RelativeLayout.LayoutParams profilePicParam = new RelativeLayout.LayoutParams(75, 75);
-                            profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                            profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-
-                            profilePicView.setId((i * i * i) + 2);
-                            profilePicView.setLayoutParams(profilePicParam);
-
-
-                            NameViewText.setTextColor(Color.BLUE);
-                            NameViewText.setTextSize(17);
-                            NameViewText.setId((i * i * i) + 1);
-
-
-                            RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            nameViewParam.addRule(RelativeLayout.RIGHT_OF, profilePicView.getId());
-                            NameViewText.setLayoutParams(nameViewParam);
-
-
-                            params.addRule(RelativeLayout.BELOW, profilePicView.getId());
-                            imageView.setLayoutParams(params);
-
-
-                            RelativeLayout.LayoutParams UnderPhotoParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            UnderPhotoParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, imageView.getId());
-                            UnderPhoto.setLayoutParams(UnderPhotoParams);
-                            UnderPhoto.setBackgroundColor(Color.WHITE);
-
-                            RelativeLayout.LayoutParams LikeButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            LikeButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                            LikeButton.setLayoutParams(LikeButtonParams);
-                            LikeButton.setId((i * i * i) + 5);
-
-
-                            RelativeLayout.LayoutParams CommentButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            CommentButtonParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                            CommentButton.setLayoutParams(CommentButtonParams);
-                            CommentButton.setId((i * i * i) * 11);
-
-
-                            RelativeLayout.LayoutParams ShareButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            ShareButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                            ShareButton.setLayoutParams(ShareButtonParams);
-                            ShareButton.setId((i * i * i) * 7);
-
-
-                            final WeakReference<ImageView> imageViewReference = new WeakReference<ImageView>(imageView);
-                            final WeakReference<ImageView> ProfilePicReff = new WeakReference<ImageView>(profilePicView);
-                            final WeakReference<TextView> NameTag = new WeakReference<TextView>(NameViewText);
-                            final WeakReference<ImageView> LikeButtonReff = new WeakReference<ImageView>(LikeButton);
-                            final WeakReference<ImageView> CommentButtonReff = new WeakReference<ImageView>(CommentButton);
-                            final WeakReference<ImageView> ShareButtonReff = new WeakReference<ImageView>(ShareButton);
+        if (savedInstanceState != null){
+            Log.e("ERROR", "nul is the instance state");
 
 
 
 
-                            mViews.add(imageView);
+            int mViewsCount = savedInstanceState.getInt("mViewsCount");;
+            for(int i = 0; i <= mViewsCount;i++) {
+                View view = mViews.get(i);
+
+                RelativeLayout Rl = new RelativeLayout(getApplicationContext());
+
+                RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                Rl.setLayoutParams(RLParams);
+
+                Rl.setBackgroundColor(Color.WHITE);
+
+                Rl.addView(view);
+
+
+            }
+        } else {
+            Log.e("ERROR", "instance is ready to be loaded");
 
 
 
 
-                            Rl.addView(profilePicView);
-                            Rl.addView(NameViewText);
-                            Rl.addView(imageView);
-                            UnderPhoto.addView(LikeButton);
-                            UnderPhoto.addView(CommentButton);
-                            UnderPhoto.addView(ShareButton);
-                            Rl.addView(UnderPhoto);
-                            ll.addView(Rl);
+            ParseQuery<ParseObject> MainQuery = this.PhotosToShowQueryMake();
 
-                            Bitmap bitmaps = Login.getBitmapFromMemoryCache(list.get(i).getObjectId());
-                            final String ParseObjectId = list.get(i).getObjectId() ;
-                            final String ParseUsername = list.get(i).getParseUser("user").getUsername() ;
-                            final String ParseUserObjectId = list.get(i).getParseObject("user").getObjectId();
-                            Bitmap ProThumb = Login.getBitmapFromMemoryCache(list.get(i).getParseUser("user").getUsername() + "thumb");
-                            String ProfileName = Login.getStringFromMemoryCache(list.get(i).getParseUser("user").getUsername()+"profileName");
+            MainQuery.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(final List<ParseObject> list, ParseException e) {
+                    if (e == null) {
+                        if (list.isEmpty()) {
 
-                            if (bitmaps == null) {
-
-                                Log.e("Error","Bitmap is null");
-                                homeView myhome = new homeView(list.get(i), imageViewReference, ProfilePicReff, NameTag, MainActivity.this, LikeButtonReff, CommentButtonReff, ShareButtonReff);
-                                myhome.execute();
-
-                            } else {
+                        } else {
+                            for (int i = 0; i < list.size(); i++) {
+                                RelativeLayout Rl = new RelativeLayout(getApplicationContext());
+                                final ImageView imageView = new ImageView(MainActivity.this);
+                                ImageView profilePicView = new ImageView(MainActivity.this);
+                                TextView NameViewText = new TextView(MainActivity.this);
+                                final ImageView ShareButton = new ImageView(MainActivity.this);
+                                final ImageView LikeButton = new ImageView(MainActivity.this);
+                                final ImageView CommentButton = new ImageView(MainActivity.this);
 
 
-                                Log.e("Error","Bitmap is not null");
-                                Drawable drawable = new BitmapDrawable(getApplicationContext().getResources(), bitmaps);
-                                Drawable drawablePro = new BitmapDrawable(getApplicationContext().getResources(), ProThumb);
-                                //imageView.scale
+                                RelativeLayout UnderPhoto = new RelativeLayout(MainActivity.this);
+                                RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                                ImageView viss = imageViewReference.get() ;
+                                Rl.setLayoutParams(RLParams);
 
-                                ImageView vissL = ProfilePicReff.get() ;
+                                Rl.setBackgroundColor(Color.WHITE);
 
-                                NameViewText.setText(ProfileName);
-                                viss.setBackground(drawable);
-                                vissL.setBackground(drawablePro);
-
-
-                                bitmaps= null ;
+                                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(getApplicationContext().getResources().getDisplayMetrics().widthPixels, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                RelativeLayout.LayoutParams profilePicParam = new RelativeLayout.LayoutParams(75, 75);
+                                profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                                profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
 
+                                profilePicView.setId((i * i * i) + 2);
+                                profilePicView.setLayoutParams(profilePicParam);
 
 
-
-                                //Perfect space for some optimization
-                                final ImageView LikeButtons = LikeButtonReff.get();
-                                final ImageView CommentButtons = CommentButtonReff.get();
-                                final ImageView ShareButtons = ShareButtonReff.get();
-
-                                likeFlag = picLikedorNotCheck(list.get(i),getApplicationContext(),LikeButtonReff);
+                                NameViewText.setTextColor(Color.BLUE);
+                                NameViewText.setTextSize(17);
+                                NameViewText.setId((i * i * i) + 1);
 
 
-                                CommentButton.setImageResource(R.drawable.chat20);
-                                ShareButton.setImageResource(R.drawable.share11);
-                                //////
-                                final int tempI = i ;
-
-                                LikeButtons.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        if (!picLikedorNotCheck(list.get(tempI),getApplicationContext(),LikeButtonReff)) {
-                                            LikeButton.setImageResource(R.drawable.heart13);
-                                            likeFlag = true ;
-                                            //user has liked the photo :)
-                                            likeThatpic(list.get(tempI),getApplicationContext());
+                                RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                nameViewParam.addRule(RelativeLayout.RIGHT_OF, profilePicView.getId());
+                                NameViewText.setLayoutParams(nameViewParam);
 
 
-                                        }else {
-                                            LikeButton.setImageResource(R.drawable.loving34);
+                                params.addRule(RelativeLayout.BELOW, profilePicView.getId());
+                                imageView.setLayoutParams(params);
 
-                                            //user has unliked the photo :(
-                                           unlikeThatpic(list.get(tempI),getApplicationContext());
+
+                                RelativeLayout.LayoutParams UnderPhotoParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                UnderPhotoParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, imageView.getId());
+                                UnderPhoto.setLayoutParams(UnderPhotoParams);
+                                UnderPhoto.setBackgroundColor(Color.WHITE);
+
+                                RelativeLayout.LayoutParams LikeButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                LikeButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                                LikeButton.setLayoutParams(LikeButtonParams);
+                                LikeButton.setId((i * i * i) + 5);
+
+
+                                RelativeLayout.LayoutParams CommentButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                CommentButtonParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                                CommentButton.setLayoutParams(CommentButtonParams);
+                                CommentButton.setId((i * i * i) * 11);
+
+
+                                RelativeLayout.LayoutParams ShareButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                ShareButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                                ShareButton.setLayoutParams(ShareButtonParams);
+                                ShareButton.setId((i * i * i) * 7);
+
+
+                                final WeakReference<ImageView> imageViewReference = new WeakReference<ImageView>(imageView);
+                                final WeakReference<ImageView> ProfilePicReff = new WeakReference<ImageView>(profilePicView);
+                                final WeakReference<TextView> NameTag = new WeakReference<TextView>(NameViewText);
+                                final WeakReference<ImageView> LikeButtonReff = new WeakReference<ImageView>(LikeButton);
+                                final WeakReference<ImageView> CommentButtonReff = new WeakReference<ImageView>(CommentButton);
+                                final WeakReference<ImageView> ShareButtonReff = new WeakReference<ImageView>(ShareButton);
+
+
+                                mViews.add(imageView);
+
+
+                                Rl.addView(profilePicView);
+                                Rl.addView(NameViewText);
+                                Rl.addView(imageView);
+                                UnderPhoto.addView(LikeButton);
+                                UnderPhoto.addView(CommentButton);
+                                UnderPhoto.addView(ShareButton);
+                                Rl.addView(UnderPhoto);
+                                ll.addView(Rl);
+
+                                Bitmap bitmaps = Login.getBitmapFromMemoryCache(list.get(i).getObjectId());
+                                final String ParseObjectId = list.get(i).getObjectId();
+                                final String ParseUsername = list.get(i).getParseUser("user").getUsername();
+                                final String ParseUserObjectId = list.get(i).getParseObject("user").getObjectId();
+                                Bitmap ProThumb = Login.getBitmapFromMemoryCache(list.get(i).getParseUser("user").getUsername() + "thumb");
+                                String ProfileName = Login.getStringFromMemoryCache(list.get(i).getParseUser("user").getUsername() + "profileName");
+
+                                if (bitmaps == null) {
+
+                                    Log.e("Error", "Bitmap is null");
+                                    homeView myhome = new homeView(list.get(i), imageViewReference, ProfilePicReff, NameTag, MainActivity.this, LikeButtonReff, CommentButtonReff, ShareButtonReff);
+                                    myhome.execute();
+
+                                } else {
+
+
+                                    Log.e("Error", "Bitmap is not null");
+                                    Drawable drawable = new BitmapDrawable(getApplicationContext().getResources(), bitmaps);
+                                    Drawable drawablePro = new BitmapDrawable(getApplicationContext().getResources(), ProThumb);
+                                    //imageView.scale
+
+                                    ImageView viss = imageViewReference.get();
+
+                                    ImageView vissL = ProfilePicReff.get();
+
+                                    NameViewText.setText(ProfileName);
+                                    viss.setBackground(drawable);
+                                    vissL.setBackground(drawablePro);
+
+
+                                    bitmaps = null;
+
+
+                                    //Perfect space for some optimization
+                                    final ImageView LikeButtons = LikeButtonReff.get();
+                                    final ImageView CommentButtons = CommentButtonReff.get();
+                                    final ImageView ShareButtons = ShareButtonReff.get();
+
+                                    likeFlag = picLikedorNotCheck(list.get(i), getApplicationContext(), LikeButtonReff);
+
+
+                                    CommentButton.setImageResource(R.drawable.chat20);
+                                    ShareButton.setImageResource(R.drawable.share11);
+                                    //////
+                                    final int tempI = i;
+
+                                    LikeButtons.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            if (!picLikedorNotCheck(list.get(tempI), getApplicationContext(), LikeButtonReff)) {
+                                                LikeButton.setImageResource(R.drawable.heart13);
+                                                likeFlag = true;
+                                                //user has liked the photo :)
+                                                likeThatpic(list.get(tempI), getApplicationContext());
+
+
+                                            } else {
+                                                LikeButton.setImageResource(R.drawable.loving34);
+
+                                                //user has unliked the photo :(
+                                                unlikeThatpic(list.get(tempI), getApplicationContext());
+
+                                            }
+
+
+                                            Toast.makeText(getApplicationContext(), String.valueOf(LikeButton.getId()), Toast.LENGTH_SHORT).show();
 
                                         }
+                                    });
 
+                                    ShareButtons.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Toast.makeText(getApplicationContext(), String.valueOf(CommentButton.getId()), Toast.LENGTH_SHORT).show();
 
-                                        Toast.makeText(getApplicationContext(), String.valueOf(LikeButton.getId()), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
-                                    }
-                                });
+                                    CommentButtons.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
-                                ShareButtons.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Toast.makeText(getApplicationContext(), String.valueOf(CommentButton.getId()), Toast.LENGTH_SHORT).show();
-
-                                    }
-                                });
-
-                                CommentButtons.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        Intent i = new Intent(getApplicationContext(), commentDetail.class);
-                                        i.putExtra("PhotoId",ParseObjectId);
-                                        i.putExtra("UserThumb",ParseUsername);
-                                        i.putExtra("UserObjectID",ParseUserObjectId);
+                                            Intent i = new Intent(getApplicationContext(), commentDetail.class);
+                                            i.putExtra("PhotoId", ParseObjectId);
+                                            i.putExtra("UserThumb", ParseUsername);
+                                            i.putExtra("UserObjectID", ParseUserObjectId);
 
 
 //
-                                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        getApplicationContext().startActivity(i);
+                                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            getApplicationContext().startActivity(i);
 
 
-                                    }
-                                });
+                                        }
+                                    });
+
+                                }
+
+
+                                Toast.makeText(getApplicationContext(), list.get(i).getObjectId(), Toast.LENGTH_LONG);
 
                             }
 
-
-                            Toast.makeText(getApplicationContext(), list.get(i).getObjectId(), Toast.LENGTH_LONG);
-
                         }
 
-                        }
+                    } else {
 
-                } else {
+                        Log.e("ERROR", e.getMessage());
 
-                    Log.e("ERROR", e.getMessage());
+                    }
+
 
                 }
 
 
-            }
+            });
 
 
-        });
+        }
     }
 
 
@@ -334,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
         ParseObject likeActivity = new ParseObject("Activity");
         likeActivity.put("type", "like");
-        likeActivity.put("fromUser",ParseUser.getCurrentUser());
+        likeActivity.put("fromUser", ParseUser.getCurrentUser());
         likeActivity.put("toUser", photoObject.getParseUser("user"));
         likeActivity.put("photo", photoObject);
 
@@ -384,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
         ParseQuery<ParseObject> queryExistingLikes = ParseQuery.getQuery("Activity");
         queryExistingLikes.whereEqualTo("photo",photoObject);
         queryExistingLikes.whereEqualTo("type","like");
-        queryExistingLikes.whereEqualTo("fromUser",ParseUser.getCurrentUser());
+        queryExistingLikes.whereEqualTo("fromUser", ParseUser.getCurrentUser());
         queryExistingLikes.whereEqualTo("toUser", photoObject.getParseUser("user"));
         Toast.makeText(context, "Ungagaliked", Toast.LENGTH_SHORT).show();
 
@@ -395,19 +412,16 @@ public class MainActivity extends AppCompatActivity {
 
                     if (!list.isEmpty()) {
 
-                        ImageView butt = imageButtonReff.get() ;
+                        ImageView butt = imageButtonReff.get();
 
                         butt.setImageResource(R.drawable.heart13);
 
 
-                        likedorNot[0] = true ;
-
-
-
+                        likedorNot[0] = true;
 
 
                     } else {
-                        ImageView butt = imageButtonReff.get() ;
+                        ImageView butt = imageButtonReff.get();
 
                         butt.setImageResource(R.drawable.loving34);
                         likedorNot[0] = false;
@@ -427,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.e("ERROR","On saved ran niggga");
+        Log.e("ERROR", "On saved ran niggga");
         super.onSaveInstanceState(outState);
         int mViewsCount = 0;
         for(View view : mViews)
@@ -439,15 +453,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt("mViewsCount", mViewsCount);
     }
 
-}
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
 
-        super.onRestoreInstanceState(savedInstanceState);
-
-        Log.e("ERROR", "On restore ran niggga");
-    }
     
 }
