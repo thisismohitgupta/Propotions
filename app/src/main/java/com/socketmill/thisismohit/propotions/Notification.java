@@ -4,14 +4,13 @@ package com.socketmill.thisismohit.propotions;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -39,6 +38,7 @@ LinearLayout ll ;
 
         ll = (LinearLayout)findViewById(R.id.notificationLL);
         ParseQuery<ParseObject> query = maketheNotificationQueryficationQuery();
+
 
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -245,5 +245,14 @@ LinearLayout ll ;
         return NotificationQUery;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    public void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
+    }
 }
 

@@ -203,7 +203,6 @@ public class Videos extends AppCompatActivity {
                     Log.e("ERROR","Muffle");
                     Intent i = new Intent(getApplicationContext(), AfterPicTakenImageCommentAddingClass.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     i.putExtra("picLocation", pictureFile.toString());
                     i.putExtra("thumbLocation", thumbnail.toString());

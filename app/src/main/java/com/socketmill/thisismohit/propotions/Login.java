@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.LruCache;
 
 import android.view.View;
 import android.widget.ProgressBar;
@@ -27,12 +27,14 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 
@@ -45,13 +47,19 @@ public class Login extends AppCompatActivity {
     ProgressBar progressBar;
 
     com.socketmill.thisismohit.propotions.widget.GifMovieView gifMovieView;
-    private static LruCache<String, Bitmap> MemCache;
 
 
     private static SimpleDiskCache StringCache ;
-    private static SimpleDiskCache bitmapCache ;
+    private static LruCache bitmapCahce ;
 
-    SimpleDiskCache Bitmapcache ;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        toolbarNav NavController = new toolbarNav();
+        NavController.checkIfLoggedIn(getApplicationContext(), MainActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +71,15 @@ public class Login extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         //final int maxMemorySize = (int)Runtime.getRuntime().maxMemory()/1024 ;
         //final int cacheSize = maxMemorySize /10 ;
+
+
         final int memClass = ((ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
         final int cacheSize = 1024 * 1024 * memClass;
-        Log.e("Error","memory allocated "+ String.valueOf(cacheSize));
+
         try {
-            StringCache = SimpleDiskCache.open (getFilesDir(), 1, (long) cacheSize  / 3); // 10 MB
-            //bitmapCache = SimpleDiskCache.open (getFilesDir(), 1, (long) cacheSize  ); // 10 MB
+            StringCache = SimpleDiskCache.open (getCacheDir(), 1, cacheSize / 5); // 10 MB
+
+            bitmapCahce = new LruCache<String,Bitmap>(cacheSize/5);
         } catch (IOException e) {
 
             Log.e("ERROR","FUCKED UP");
@@ -255,7 +266,6 @@ public class Login extends AppCompatActivity {
         //(Login.this, "Login", "Username or Password is invalid.", false);
     }
 
-
     public static Bitmap getBitmapFromMemoryCache(String key) {
 
 
@@ -322,5 +332,36 @@ public class Login extends AppCompatActivity {
         }
     }
 
+
+    public static Bitmap getBitmapFromMemoryCacheLRU(String key) {
+
+
+
+        try {
+            return (Bitmap)bitmapCahce.get(key);
+        } catch (Exception e) {
+
+
+
+        }
+        return  null;
+
+    }
+
+    public static void setBitmapMemoryCacheLRU(String key, Bitmap bitmap) {
+        if (getBitmapFromMemoryCacheLRU(key) == null) {
+
+
+
+            try {
+
+                bitmapCahce.put(key,bitmap);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
 }

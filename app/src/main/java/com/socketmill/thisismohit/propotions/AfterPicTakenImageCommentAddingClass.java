@@ -32,7 +32,7 @@ public class AfterPicTakenImageCommentAddingClass extends AppCompatActivity {
 
 
     ImageButton CrossButton;
-    ImageButton doneAddingComment;
+
     ImageView ImageviewInUploadActivity;
     public ProgressDialog progess ;
     com.socketmill.thisismohit.propotions.upload.uploadAfterClicking uploadAfterCLicking ;
@@ -73,6 +73,9 @@ public class AfterPicTakenImageCommentAddingClass extends AppCompatActivity {
 
                 ParseUser currentUser = ParseUser.getCurrentUser();
 
+                Login.setBitmapMemoryCacheLRU("upload"+PicturefileLocation,imageSet);
+                Login.setBitmapMemoryCacheLRU("thumb"+ThumbnailfileLocation,thumbSet);
+
 
 
 
@@ -81,35 +84,27 @@ public class AfterPicTakenImageCommentAddingClass extends AppCompatActivity {
 
 
 
-                    ByteArrayOutputStream ImageStream = new ByteArrayOutputStream();
-                    imageSet.compress(Bitmap.CompressFormat.JPEG,100,ImageStream);
-                    byte[] ImageBytearray = ImageStream.toByteArray();
 
-                    ImageStream.reset();
-
-                    ByteArrayOutputStream ThumbStream = new ByteArrayOutputStream();
-                    thumbSet.compress(Bitmap.CompressFormat.JPEG,100,ThumbStream);
-                    byte[] ThumbBytearray = ThumbStream.toByteArray();
-
-                    ThumbStream.reset();
 
 
                     //final ParseFile ImageMainfile = new ParseFile(PicturefileLocation, ImageBytearray);
 
                     //final ParseFile Thumbfile = new ParseFile(PicturefileLocation, ThumbBytearray);
+                   ImageButton doneAddingComment = (ImageButton)findViewById(R.id.imgTickDone) ;
 
+                        WeakReference<ImageButton> doneAddingCommentREFF = new WeakReference<ImageButton>(doneAddingComment);
 
-                    uploadAfterCLicking = new com.socketmill.thisismohit.propotions.upload.uploadAfterClicking();
-
-                    uploadAfterCLicking.bytePicBig = ImageBytearray ;
-                    uploadAfterCLicking.bytePicSmall = ThumbBytearray ;
-                    uploadAfterCLicking.profile = com.facebook.Profile.getCurrentProfile();
-                    uploadAfterCLicking.context = getApplicationContext() ;
                     progess = new ProgressDialog(AfterPicTakenImageCommentAddingClass.this);
                     progess.setMessage("Just a Minute!");
                     progess.setTitle("Uploading");
-                    uploadAfterCLicking.progess = progess ;
+
                     WeakReference<ProgressDialog> DialogReff = new WeakReference<ProgressDialog>(progess);
+                    uploadAfterCLicking = new com.socketmill.thisismohit.propotions.upload.uploadAfterClicking(PicturefileLocation,ThumbnailfileLocation,doneAddingCommentREFF,DialogReff);
+                    uploadAfterCLicking.progess = progess ;
+
+                    uploadAfterCLicking.profile = com.facebook.Profile.getCurrentProfile();
+                    uploadAfterCLicking.context = getApplicationContext() ;
+
 
 
                     uploadAfterCLicking.view = (RelativeLayout)findViewById(R.id.relitiveLayout) ;
@@ -153,16 +148,9 @@ public class AfterPicTakenImageCommentAddingClass extends AppCompatActivity {
 
 
         ImageviewInUploadActivity = (ImageView) findViewById(R.id.ImageDisplayForUpload);
-        doneAddingComment = (ImageButton)findViewById(R.id.imgTickDone) ;
 
 
-        doneAddingComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              // progess = ProgressDialog.show(AfterPicTakenImageCommentAddingClass.this,"Uploading","Please Wait, Uploading!!");
-                uploadAfterCLicking.progess.show();
-            }
-        });
+
 
         CrossButton.setOnClickListener(new View.OnClickListener() {
             @Override

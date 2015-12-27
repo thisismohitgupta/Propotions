@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +27,8 @@ import com.socketmill.thisismohit.propotions.Login;
 import com.socketmill.thisismohit.propotions.MainActivity;
 import com.socketmill.thisismohit.propotions.R;
 
+import org.w3c.dom.Text;
+
 
 /**
  * Created by thisismohit on 03/12/15.
@@ -42,6 +42,8 @@ public class homeView extends AsyncTask<String, Void, String> {
     private final WeakReference<ImageView>LikeButtonReff ;
     private final WeakReference<ImageView>CommentButtonReff;
     private final WeakReference<ImageView>ShareButtonReff;
+    private final WeakReference<TextView> LikeCountREFF;
+    private final WeakReference<TextView> CommentCountREFF;
     private Context context ;
 
     private ParseObject photoObject ;
@@ -55,8 +57,19 @@ public class homeView extends AsyncTask<String, Void, String> {
     byte[] datapro ;
     String Username ;
     boolean likeFlag;
-    
-    public homeView(ParseObject _photoObjec,WeakReference<ImageView> imageView,WeakReference<ImageView> profileImageView,WeakReference<TextView> nameView,Context _context,WeakReference<ImageView> _LikeButtonReff,WeakReference<ImageView> _CommentButtReff,WeakReference<ImageView>_ShareButtonReff){
+
+
+    public homeView(ParseObject _photoObjec,
+                    WeakReference<ImageView> imageView,
+                    WeakReference<ImageView> profileImageView,
+                    WeakReference<TextView> nameView,
+                    Context _context,
+                    WeakReference<ImageView> _LikeButtonReff,
+                    WeakReference<ImageView> _CommentButtReff,
+                    WeakReference<ImageView> _ShareButtonReff,
+                    WeakReference<TextView> LikeCountReff,
+                    WeakReference<TextView> CommentCountReff)
+    {
 
         LikeButtonReff = _LikeButtonReff ;
         CommentButtonReff = _CommentButtReff ;
@@ -66,6 +79,10 @@ public class homeView extends AsyncTask<String, Void, String> {
         nameViewReference = nameView;
         profileViewReference = (profileImageView);
         context = _context ;
+        LikeCountREFF = LikeCountReff ;
+        CommentCountREFF = CommentCountReff;
+
+
 
     }
 
@@ -89,7 +106,7 @@ public class homeView extends AsyncTask<String, Void, String> {
             Log.e("ERROR","Images Were Downloaded :(");
             if(dataMain!= null) {
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 1;
+                options.inSampleSize = 2;
                 bmp = BitmapFactory.decodeByteArray(dataMain, 0, dataMain.length, options);
                 bmp = Bitmap.createScaledBitmap(bmp, context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().widthPixels * bmp.getHeight() / bmp.getWidth(), false);
                 if (bmp != null) {
@@ -171,16 +188,11 @@ public class homeView extends AsyncTask<String, Void, String> {
                final ImageView LikeButton = LikeButtonReff.get();
                 final ImageView CommentButton = CommentButtonReff.get();
                 final ImageView ShareButton = ShareButtonReff.get();
-                 LikeButton.setImageResource(R.drawable.loving34);
-                likeFlag = MainActivity.picLikedorNotCheck(photoObject, context, LikeButtonReff);
 
-                if(likeFlag == true) {
-                    LikeButton.setImageResource(R.drawable.loving34);
-                }else {
+                 Reactions Reaction = new Reactions(photoObject,false);
+                likeFlag = Reaction.picLikedorNotCheck(photoObject, LikeButtonReff,false,true,LikeCountREFF);
 
-                    LikeButton.setImageResource(R.drawable.heart13);
 
-                }
                 CommentButton.setImageResource(R.drawable.chat20);
                 ShareButton.setImageResource(R.drawable.share11);
                 //////
@@ -189,24 +201,9 @@ public class homeView extends AsyncTask<String, Void, String> {
                     @Override
                     public void onClick(View v) {
 
-                        if (likeFlag == false) {
-                            LikeButton.setImageResource(R.drawable.heart13);
-                            likeFlag = true ;
-                            //user has liked the photo :)
-
-                            MainActivity.likeThatpic(photoObject,context);
-
-
-                        }else {
-                            LikeButton.setImageResource(R.drawable.loving34);
-                            likeFlag= false ;
-                            //user has unliked the photo :(
-                            MainActivity.unlikeThatpic(photoObject, context);
-
-                        }
-
-
-                            Toast.makeText(context, String.valueOf(LikeButton.getId()), Toast.LENGTH_SHORT).show();
+                        Reactions Reaction = new Reactions(photoObject,false);
+                        Reaction.picLikedorNotCheck(photoObject, LikeButtonReff,false,false,LikeCountREFF) ;
+                            //if the user has not already liked the pic we need to like it for user
 
                     }
                 });

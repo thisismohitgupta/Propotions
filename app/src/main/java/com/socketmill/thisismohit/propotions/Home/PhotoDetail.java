@@ -7,9 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,20 +14,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.List;
-import java.util.jar.Attributes;
 
 import com.socketmill.thisismohit.propotions.Login;
 
 import com.socketmill.thisismohit.propotions.R;
-
-import org.w3c.dom.Comment;
 
 public class PhotoDetail extends AppCompatActivity {
 

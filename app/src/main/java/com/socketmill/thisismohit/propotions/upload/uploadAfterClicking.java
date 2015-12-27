@@ -3,9 +3,11 @@ package com.socketmill.thisismohit.propotions.upload;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.facebook.Profile;
@@ -15,13 +17,14 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 
-import org.junit.runner.Result;
-
-import com.socketmill.thisismohit.propotions.AfterPicTakenImageCommentAddingClass;
-import com.socketmill.thisismohit.propotions.Explore;
+import com.socketmill.thisismohit.propotions.Login;
 import com.socketmill.thisismohit.propotions.MainActivity;
+
+import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by thisismohit on 03/12/15.
@@ -31,66 +34,77 @@ public class uploadAfterClicking extends AsyncTask<String, Void, String> {
 
 
 
-    public byte[] bytePicBig ;
-    public byte[] bytePicSmall ;
+
     public Profile profile ;
     public Context context ;
     public ProgressDialog progess ;
     public RelativeLayout view ;
-    public boolean flag = false ;
 
+    private String ThumbnailfileLocation ;
+    private String PicturefileLocation ;
+    ParseFile ProfileImageFile ;
+    final WeakReference<ImageButton> DoneUploadingREFF ;
+    final WeakReference<ProgressDialog> ProgressDialogBarREFF ;
+
+   ParseFile ProfileImageThumbFile ;
+    public uploadAfterClicking(String _PicturefileLocation,String _ThumbnailfileLocation,WeakReference<ImageButton> _DoneUploadingREFF,WeakReference<ProgressDialog> _ProgressDialogBarREFF){
+
+        PicturefileLocation = _PicturefileLocation ;
+        ThumbnailfileLocation = _ThumbnailfileLocation ;
+        DoneUploadingREFF = _DoneUploadingREFF ;
+        ProgressDialogBarREFF = _ProgressDialogBarREFF ;
+
+
+    }
 
     ParseObject Photo ;
     @Override
     protected String doInBackground(String[] Params) {
 
+        Bitmap imageSet = Login.getBitmapFromMemoryCacheLRU("upload" + PicturefileLocation);
+        Bitmap thumbSet = Login.getBitmapFromMemoryCacheLRU("thumb"+ThumbnailfileLocation);
 
-        Photo = new ParseObject("Photo") ;
-
-
-
-
-        final ParseFile ProfileImageFile = new ParseFile("Profile_" + profile.getId() + ".jpg", bytePicBig);
-        final ParseFile ProfileImageThumbFile = new ParseFile("thumb_" + profile.getId() + ".jpg", bytePicSmall);
-        ProfileImageFile.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                Photo.put("image", ProfileImageFile);
-                Log.e("ERROR", "hello");
-
-                ProfileImageThumbFile.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        Photo.put("thumbnail", ProfileImageThumbFile);
-                        //Photo.("user").add(ParseUser.getCurrentUser());
-
-                        Photo.put("user",ParseObject.createWithoutData(ParseUser.class,ParseUser.getCurrentUser().getObjectId()));
-                        ParseACL photoAcl = new ParseACL(ParseUser.getCurrentUser());
-
-                        photoAcl.setPublicReadAccess(true);
-                        photoAcl.setPublicWriteAccess(false);
-
-
-                        Photo.setACL(photoAcl);
-
-
-                        Photo.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-
-                                Log.e("ERROR","done uploading both files");
-                            }
-                        });
-                    }
-                });
-            }
-        });
-
-        flag = true ;
+        ByteArrayOutputStream ImageStream = new ByteArrayOutputStream();
 
 
 
-        return "done";
+
+        ByteArrayOutputStream ThumbStream = new ByteArrayOutputStream();
+
+        byte[] ImageBytearray ;
+        byte[] ThumbBytearray ;
+
+        try {
+            imageSet.compress(Bitmap.CompressFormat.JPEG, 100, ImageStream);
+            ImageBytearray = ImageStream.toByteArray();
+            thumbSet.compress(Bitmap.CompressFormat.JPEG, 100, ThumbStream);
+            ThumbBytearray = ThumbStream.toByteArray();
+            ImageStream.reset();
+            ThumbStream.reset();
+            Photo = new ParseObject("Photo") ;
+
+
+
+
+            ProfileImageFile = new ParseFile("Profile_" + profile.getId() + ".jpg", ImageBytearray);
+            ProfileImageThumbFile = new ParseFile("thumb_" + profile.getId() + ".jpg", ThumbBytearray);
+        }catch (Exception e){
+
+        }
+
+
+        try {
+            ProfileImageFile.save() ;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            ProfileImageThumbFile.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return "done" ;
 
     }
 
@@ -99,8 +113,22 @@ public class uploadAfterClicking extends AsyncTask<String, Void, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        Log.e("ERROR", getStatus().toString());
 
+        ImageButton doneAddingComment = DoneUploadingREFF.get();
+
+        Log.e("Error","im here");
+        doneAddingComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProgressDialog dialog = ProgressDialogBarREFF.get();
+
+                dialog.show();
+                Log.e("Error", "im here on click");
+
+
+
+            }
+        });
 
 
     }
@@ -109,11 +137,89 @@ public class uploadAfterClicking extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
-Log.e("ERROR", getStatus().toString());
 
+        Photo.put("image", ProfileImageFile);
+        Photo.put("thumbnail", ProfileImageThumbFile);
+
+
+        Photo.put("user", ParseObject.createWithoutData(ParseUser.class, ParseUser.getCurrentUser().getObjectId()));
+        ParseACL photoAcl = new ParseACL(ParseUser.getCurrentUser());
+
+        photoAcl.setPublicReadAccess(true);
+        photoAcl.setPublicWriteAccess(false);
+
+
+        Photo.setACL(photoAcl);
 
 
         //
+        ProgressDialog dialog = ProgressDialogBarREFF.get();
+
+      if (dialog.isShowing()){
+          dialog.setMessage("Image Uploaded");
+          Photo.saveInBackground();
+          Timer timer = new Timer();
+
+          timer.schedule(new TimerTask() {
+              public void run() {
+                  ProgressDialog dialog = ProgressDialogBarREFF.get();
+                  dialog.dismiss();
+
+                  Intent i = new Intent(context, MainActivity.class);
+                  i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+                  //i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                  i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                  context.startActivity(i);
+              }
+          }, 1000);
+
+
+
+      }else {
+          ImageButton doneAddingComment = DoneUploadingREFF.get();
+
+          doneAddingComment.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                  final ProgressDialog dialog = ProgressDialogBarREFF.get();
+
+                  dialog.show();
+                  Photo.saveInBackground(new SaveCallback() {
+                      @Override
+                      public void done(ParseException e) {
+                          if (dialog.isShowing()){
+                              dialog.setMessage("Image Uploaded");
+                              Photo.saveInBackground();
+                              Timer timer = new Timer();
+
+                              timer.schedule(new TimerTask() {
+                                  public void run() {
+                                      ProgressDialog dialog = ProgressDialogBarREFF.get();
+                                      dialog.dismiss();
+
+
+
+                                      Intent i = new Intent(context, MainActivity.class);
+                                      i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+                                      //i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                      i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                      context.startActivity(i);
+                                  }
+                              }, 1000);
+
+
+
+                          }                      }
+                  });
+                  Log.e("Error", "im here on click");
+
+
+              }
+          });
+
+      }
 
 
 

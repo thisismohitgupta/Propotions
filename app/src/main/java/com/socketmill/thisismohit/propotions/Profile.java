@@ -1,6 +1,7 @@
 package com.socketmill.thisismohit.propotions;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 
@@ -38,6 +39,15 @@ public class Profile extends AppCompatActivity {
         navigation.PROFILE = true;
         navigation.setNav(getApplicationContext(), toolbar, this);
         return true;
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    public void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
     }
 
 }

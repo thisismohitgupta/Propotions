@@ -75,7 +75,6 @@ public class toolbarNav extends AppCompatActivity {
 
                 } else if (item.getItemId() == toolbar.getMenu().getItem(4).getItemId() && PROFILE != true) {
 
-                    Toast.makeText(context, "profile", Toast.LENGTH_SHORT).show();
 
 
                     Intent i = new Intent(context, com.socketmill.thisismohit.propotions.Profile.class);
@@ -87,7 +86,7 @@ public class toolbarNav extends AppCompatActivity {
 
                 } else if (item.getItemId() == toolbar.getMenu().getItem(0).getItemId() && HOME != true) {
 
-                    Toast.makeText(context, "home", Toast.LENGTH_SHORT).show();
+
 
                     Intent i = new Intent(context, MainActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -122,7 +121,7 @@ public class toolbarNav extends AppCompatActivity {
             Intent i = new Intent(context, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
 
@@ -136,12 +135,11 @@ public class toolbarNav extends AppCompatActivity {
 
         if (Profile.getCurrentProfile() == null) {
 
-            Toast.makeText(context, "not logged in", Toast.LENGTH_LONG).show();
 
             Intent i = new Intent(context, Login.class);
 
             i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
 
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
@@ -149,7 +147,6 @@ public class toolbarNav extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(context, "logged in", Toast.LENGTH_LONG).show();
 
 
         }

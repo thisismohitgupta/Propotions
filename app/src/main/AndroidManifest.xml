@@ -25,7 +25,9 @@
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/parse_client_key" />
 
-        <activity android:name=".MainActivity" >
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTask"
+            >
         </activity>
         <activity
             android:name=".Videos"
@@ -33,10 +35,12 @@
         <activity
             android:name=".Explore"
             android:label="@string/title_activity_explore"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Notification"
             android:label="@string/title_activity_notification"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".AfterPicTakenImageCommentAddingClass"

@@ -82,6 +82,7 @@ public class SimpleDiskCache {
 			Bitmap bitmap = BitmapFactory.decodeStream(snapshot.getInputStream(VALUE_IDX));
 			return new BitmapEntry(bitmap, readMetadata(snapshot));
 		} finally {
+
 			snapshot.close();
 		}
 	}

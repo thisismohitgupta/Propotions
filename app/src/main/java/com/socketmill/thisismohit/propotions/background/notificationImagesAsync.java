@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
     String PhotoId ;
 
 
+
    public notificationImagesAsync(ParseObject _notificationObejct,WeakReference<ImageView> _profileImageWeakReddd , WeakReference<ImageView> _photoThumbnailreff){
 
         notificationObject= _notificationObejct ;

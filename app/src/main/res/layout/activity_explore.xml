@@ -23,6 +23,18 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/toolbar_Bottom_explore"
         android:layout_below="@+id/toolbar_top_explore">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical"
+
+    android:id="@+id/linearLayout2"
+
+    >
+
+</LinearLayout>
+
 
 
     </RelativeLayout>
