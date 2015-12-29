@@ -58,28 +58,106 @@ public class Explore extends AppCompatActivity {
 
                     if (!list.isEmpty()){
 
-                        for(int i = 0 ; i<list.size();i++) {
+                        for(int i = 0 ; i<list.size();i = i + 3 ) {
                            // TextView text = new TextView(getApplicationContext());
 
                            // ParseObject photo = list.get(i).getParseObject("photo");
                             //text.setText(list.get(i).getObjectId());
 
 
-                            ImageView image = new ImageView(getApplicationContext());
 
-                            RelativeLayout Rl = new RelativeLayout(getApplicationContext());
-                            RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            LinearLayout Rl = new LinearLayout(getApplicationContext());
+                            LinearLayout.LayoutParams RLParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                           // RLParams.setLayoutDirection();
+                            Rl.setOrientation(LinearLayout.HORIZONTAL);
                             Rl.setLayoutParams(RLParams);
-                            RelativeLayout.LayoutParams ImageParams = new RelativeLayout.LayoutParams(175, 175);
-                            ImageParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                            ImageParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                            //final float Density = getApplicationContext().getResources().getDisplayMetrics().density;
 
-                            image.setLayoutParams(ImageParams);
 
-                            ExploreImageAsync sync = new ExploreImageAsync(new WeakReference<ImageView>(image),list.get(i).getParseObject("photo"),getApplicationContext());
-                            sync.execute();
+                            float width = getApplicationContext().getResources().getDisplayMetrics().widthPixels ;
 
-                            Rl.addView(image);
+                            float imageWidth = (width / 3 )  ;
+                            float imageHeight = imageWidth  ;
+
+
+
+
+
+                            if (i<list.size()) {
+                                ImageView image0 = new ImageView(getApplicationContext());
+                                RelativeLayout.LayoutParams ImageParams1 = new RelativeLayout.LayoutParams((int) (imageWidth), (int) (imageHeight));
+                                ImageParams1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                                ImageParams1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+                                ImageParams1.setMargins(0,2,2,2);
+
+                                image0.setLayoutParams(ImageParams1);
+
+                                ExploreImageAsync sync1 = new ExploreImageAsync(new WeakReference<ImageView>(image0), list.get(i).getParseObject("photo"), getApplicationContext());
+                                sync1.execute();
+                                Rl.addView(image0);
+
+                            }
+
+
+
+
+
+                            if (i+1<list.size()) {
+                                ImageView image1 = new ImageView(getApplicationContext());
+                                RelativeLayout.LayoutParams ImageParams2 = new RelativeLayout.LayoutParams((int) (imageWidth), (int) (imageHeight));
+                                ImageParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                                ImageParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+                                ImageParams2.setMargins(2,2,0,2);
+                                image1.setLayoutParams(ImageParams2);
+
+                                ExploreImageAsync sync2 = new ExploreImageAsync(new WeakReference<ImageView>(image1), list.get(i + 1).getParseObject("photo"), getApplicationContext());
+                                sync2.execute();
+
+                                Rl.addView(image1);
+                            }
+
+
+                            if (i+2<list.size()) {
+                                ImageView image2 = new ImageView(getApplicationContext());
+                                RelativeLayout.LayoutParams ImageParams3 = new RelativeLayout.LayoutParams((int) (imageWidth), (int) (imageHeight));
+                                ImageParams3.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                                ImageParams3.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+                                ImageParams3.setMargins(2,2,0,2);
+                                image2.setLayoutParams(ImageParams3);
+
+                                ExploreImageAsync sync3 = new ExploreImageAsync(new WeakReference<ImageView>(image2), list.get(i + 2).getParseObject("photo"), getApplicationContext());
+                                sync3.execute();
+
+                                Rl.addView(image2);
+                            }
+
+//
+//                            if (i+3<list.size()) {
+//                                ImageView image3 = new ImageView(getApplicationContext());
+//                                RelativeLayout.LayoutParams ImageParams4 = new RelativeLayout.LayoutParams((int) (imageWidth), (int) (imageHeight));
+//                                ImageParams4.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//                                ImageParams4.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//
+//                                image3.setLayoutParams(ImageParams4);
+//
+//
+//                                ExploreImageAsync sync4 = new ExploreImageAsync(new WeakReference<ImageView>(image3), list.get(i + 3).getParseObject("photo"), getApplicationContext());
+//                                sync4.execute();
+//
+//                                Rl.addView(image3);
+//                            }
+
+
+
+
+
+
+
+
 
                             LL.addView(Rl);
 

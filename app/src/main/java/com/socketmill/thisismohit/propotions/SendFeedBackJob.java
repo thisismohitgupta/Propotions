@@ -48,11 +48,17 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
 
     boolean UserFoundOrNot ;
 
-    //Context context ;
+    Context context ;
 
     com.facebook.Profile profile ;
     ParseFile ProfileImageFile ;
     ParseFile ProfileImageThumbFile ;
+
+    public SendFeedBackJob(Context _context){
+    context = _context ;
+
+    }
+
 
     @Override
     protected String doInBackground(String[] Params) {
@@ -73,57 +79,55 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
             Log.e("ERROR","Failed");
         }
         User.setPassword(profile.getId() + profile.getId());
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("User");// put name of your Parse class here
+        ParseQuery<ParseUser> query = ParseUser.getQuery();// put name of your Parse class here
         query.whereEqualTo("username", profile.getId());
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> list, ParseException e)
+
+
+        try {
+            List<ParseUser> list = query.find();
+
+            if (list == null)
             {
-                if (e == null)
+                //  parseSignUp() ;
+                UserFoundOrNot = false ;
+
+            }
+            else
+            {
+                if  (list.isEmpty())
                 {
-                    //brace the lord no error
-                    if (list == null)
-                    {
-                      //  parseSignUp() ;
-                        UserFoundOrNot = false ;
-
-                    }
-                    else
-                    {
-                        if  (list.isEmpty())
-                        {
 
 
-                            UserFoundOrNot = false ;
-                        //    parseSignUp();
-                        }
-                        else
-                        {
-                            UserFoundOrNot = true ;
-                            login(profile.getId(), (profile.getId() + profile.getId()));
-                        }
-                        for (ParseObject str : list)
-                        {
-                                Log.e("ERROR", "what ?");
-                        }
-                    }
+                    UserFoundOrNot = false ;
+                    //    parseSignUp();
                 }
                 else
                 {
-                    Log.e("ERROR", "not");
+                    UserFoundOrNot = true ;
 
                 }
+
             }
-        });
+
+        } catch (ParseException e) {
+            Log.e("ERROR",e.getMessage().toString());
+        }
 
 
+        if(UserFoundOrNot){
 
-        if (UserFoundOrNot){
+            login(profile.getId(), (profile.getId() + profile.getId()));
 
         }else {
-            parseSignUp() ;
+
+            parseSignUp();
+
 
         }
+
+
+
+
 
 
         return "done";
@@ -183,82 +187,69 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
         return null ;
  }
 
-    private void login(String lowerCase, String password)
+    public void login(String lowerCase, String password)
     {
-        // TODO Auto-generated method stub
-        ParseUser.logInInBackground(lowerCase, password, new LogInCallback()
-        {
-            @Override
-            public void done(ParseUser user, ParseException e)
-            {
-                // TODO Auto-generated method stub
-                if(e == null)
-                {
-                    Log.e("ERROR","Login successful in async");
-                    loginSuccessful();
-                }
-                else
-                {
-                    Log.e("ERROR","Login Unsuccessful in async");
-                    loginUnSuccessful();
-                }
+
+        try {
+           ParseUser newUser = ParseUser.logIn(lowerCase, password) ;
+
+            if(newUser != null){
+                Log.e("ERROR","Login successful in async");
+               loginSuccessful();
+            }else {
+
+                Log.e("ERROR","Login Unsuccessful in async");
+                loginUnSuccessful();
             }
-        });
+
+
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void loginSuccessful() {
         // TODO Auto-generated method stub
+
+        Intent i = new Intent(context, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
+
     }
     protected void loginUnSuccessful() {
-        // TODO Auto-generated method stub
+
+        Toast.makeText(context,"Login Unsuccessfull",Toast.LENGTH_SHORT).show();
+
     }
     public void parseSignUp()
         {
             Uri ProfilePicBigUri = profile.getProfilePictureUri(500, 500);
-            Uri ProfilePicSmallUri = profile.getProfilePictureUri(200, 200);
+            Uri ProfilePicSmallUri = profile.getProfilePictureUri(100, 100);
             byte[] Byte = geByteArrayFromURL(ProfilePicBigUri.toString());
             byte[] Byte2 = geByteArrayFromURL(ProfilePicSmallUri.toString());
             Log.e("ERROR", "got images 2 omg ");
             ProfileImageFile = new ParseFile("Profile_" + profile.getId() + ".jpg", Byte);
             ProfileImageThumbFile = new ParseFile("thumb_" + profile.getId() + ".jpg", Byte2);
-            ProfileImageFile.saveInBackground(new SaveCallback() {
+            try {
+                ProfileImageFile.save();
+                User.put("profilePictureMedium", ProfileImageFile);
+                ProfileImageThumbFile.save();
+                User.put("profilePictureSmall", ProfileImageThumbFile);
+                User.signUp();
 
 
-                @Override
-                public void done(ParseException e) {
-                    Log.e("ERROR", "donesavin  omg ");
-
-                    User.put("profilePictureMedium", ProfileImageFile);
-
-                    ProfileImageThumbFile.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            Log.e("ERROR", "donesavin 2 omg ");
-
-                            User.put("profilePictureSmall", ProfileImageThumbFile);
-                            User.signUpInBackground(new SignUpCallback() {
-                                @Override
-                                public void done(ParseException e) {
-
-                                    Log.e("ERROR", "done signup omg ");
+                login(profile.getId(), (profile.getId() + profile.getId()));
+            } catch (ParseException e) {
+//                        Toast.makeText(context,e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                Log.e("ERROR", e.getMessage().toString());
 
 
+            }
 
-                                    login(profile.getId(), (profile.getId() + profile.getId()));
-
-
-
-                                }
-
-                            });
-
-                        }
-
-                    });
-
-                }
-
-            });
 
         }
 
@@ -276,6 +267,14 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
         if (progressBar.getVisibility() == View.VISIBLE ) {
             progressBar.setVisibility(View.INVISIBLE);
         }
+
+
+
+
+
+
+
+
     }
 
 }

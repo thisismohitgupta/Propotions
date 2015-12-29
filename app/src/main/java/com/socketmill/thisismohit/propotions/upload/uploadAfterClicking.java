@@ -75,9 +75,9 @@ public class uploadAfterClicking extends AsyncTask<String, Void, String> {
         byte[] ThumbBytearray ;
 
         try {
-            imageSet.compress(Bitmap.CompressFormat.JPEG, 100, ImageStream);
+            imageSet.compress(Bitmap.CompressFormat.PNG, 100, ImageStream);
             ImageBytearray = ImageStream.toByteArray();
-            thumbSet.compress(Bitmap.CompressFormat.JPEG, 100, ThumbStream);
+            thumbSet.compress(Bitmap.CompressFormat.PNG, 100, ThumbStream);
             ThumbBytearray = ThumbStream.toByteArray();
             ImageStream.reset();
             ThumbStream.reset();

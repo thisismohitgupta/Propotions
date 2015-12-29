@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.parse.GetFileCallback;
 import com.parse.ParseException;
@@ -38,6 +39,7 @@ public class ExploreImageAsync extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         if(bmp!=null){
+
             ImageView imageView = imageViewWeakReference.get();
 
             Drawable drawable = new BitmapDrawable(context.getResources(),bmp);

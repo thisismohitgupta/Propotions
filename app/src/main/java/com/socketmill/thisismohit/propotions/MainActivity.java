@@ -310,24 +310,30 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmaps = Login.getBitmapFromMemoryCacheLRU(list.get(i).getObjectId());
             final String ParseObjectId = list.get(i).getObjectId();
 
-            final String ParseUsername ;
-            final String ParseUserObjectId ;
+             String ParseUsernames;
+             String ParseUserObjectIds  ;
             try {
-                 ParseUsername = list.get(i).getParseUser("user").getUsername();
-                ParseUserObjectId = list.get(i).getParseObject("user").getObjectId();
 
-            }finally {
+                 ParseUsernames = list.get(i).getParseUser("user").fetchIfNeeded().getUsername();
+                ParseUserObjectIds= list.get(i).getParseObject("user").fetchIfNeeded().getObjectId();
+
+            } catch (Exception e){
+
+                ParseUsernames = null ;
+                ParseUserObjectIds = null;
 
             }
+            final String ParseUsername = ParseUsernames;
+            final String ParseUserObjectId = ParseUserObjectIds ;
 
-            Bitmap ProThumb = Login.getBitmapFromMemoryCacheLRU(list.get(i).getParseUser("user").getUsername() + "thumb");
-            String ProfileName = Login.getStringFromMemoryCache(list.get(i).getParseUser("user").getUsername() + "profileName");
+            Bitmap ProThumb = Login.getBitmapFromMemoryCacheLRU(ParseUsernames + "thumb");
+            String ProfileName = Login.getStringFromMemoryCache(ParseUsernames + "profileName");
 
             if (bitmaps == null) {
 
 // check the disk
                 bitmaps = Login.getBitmapFromMemoryCache(list.get(i).getObjectId());
-                ProThumb = Login.getBitmapFromMemoryCache(list.get(i).getParseUser("user").getUsername() + "thumb");
+                ProThumb = Login.getBitmapFromMemoryCache(ParseUsernames + "thumb");
 
                 if (bitmaps == null) {
                     Log.e("Error", "Bitmap is null");
@@ -338,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Login.setBitmapMemoryCacheLRU(list.get(i).getObjectId(), bitmaps);
                     if (ProThumb != null) {
-                        Login.setBitmapMemoryCacheLRU(list.get(i).getParseUser("user").getUsername() + "thumb", ProThumb);
+                        Login.setBitmapMemoryCacheLRU(ParseUsername + "thumb", ProThumb);
 
                     }
                 }

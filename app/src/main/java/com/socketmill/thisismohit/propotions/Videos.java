@@ -145,30 +145,32 @@ public class Videos extends AppCompatActivity {
 
 
                     BitmapFactory.Options options=new BitmapFactory.Options();// Create object of bitmapfactory's option method for further option use
-                    options.inPurgeable = true;
 
 
                     bitmap = BitmapFactory.decodeByteArray(data,0,data.length,options);
 //
 
+                    bitmap = Bitmap.createScaledBitmap(bitmap,900,900*bitmap.getHeight()/bitmap.getWidth(),false);
 
-                    Bitmap cropImg = Bitmap.createScaledBitmap(bitmap,500,500*bitmap.getHeight()/bitmap.getWidth(),false);
+                    //Bitmap cropImg = Bitmap.createScaledBitmap(bitmap,500,500*bitmap.getHeight()/bitmap.getWidth(),false);
 
 
                     int stuff ;
-                    if (cropImg.getHeight() > cropImg.getWidth()){
-                         stuff = cropImg.getWidth() ;
+                    if (bitmap.getHeight() > bitmap.getWidth()){
+                         stuff = bitmap.getWidth() ;
 
                     }
                     else {
-                         stuff = cropImg.getHeight() ;
+                         stuff = bitmap.getHeight() ;
                     }
-                    cropImg = Bitmap.createBitmap(cropImg, 0, 0, stuff, stuff, matrix, true);
+                   Bitmap cropImg = Bitmap.createBitmap(bitmap, 0, 0, stuff, stuff, matrix, true);
 
 
 
 
-                    Bitmap Thumnail = Bitmap.createScaledBitmap(bitmap, 50, 50 * bitmap.getHeight()/bitmap.getWidth(), true);
+
+
+                    Bitmap Thumnail = Bitmap.createScaledBitmap(bitmap, (bitmap.getWidth() / 4) , (bitmap.getWidth() / 4) * bitmap.getHeight()/bitmap.getWidth(), true);
 
                     bitmap.recycle();
 

@@ -122,7 +122,7 @@ public class homeView extends AsyncTask<String, Void, String> {
         final ParseUser user =  photoObject.getParseUser("user");
 
 
-        pro = Login.getBitmapFromMemoryCache(photoObject.getParseUser("user").getUsername() + "thumb");
+        pro = Login.getBitmapFromMemoryCache(Username+ "thumb");
         if (pro == null) {
 
             ParseFile profilePicThumb = user.getParseFile("profilePictureSmall");
@@ -140,7 +140,7 @@ public class homeView extends AsyncTask<String, Void, String> {
                 optionsPro.inSampleSize = 2;
                 pro = BitmapFactory.decodeByteArray(datapro, 0, datapro.length, optionsPro);
 
-                Login.setBitmapMemoryCache(photoObject.getParseUser("user").getUsername() + "thumb",pro);
+                Login.setBitmapMemoryCache(Username + "thumb",pro);
 
             }
 
@@ -157,10 +157,10 @@ public class homeView extends AsyncTask<String, Void, String> {
 
         if(ProfileName == null) {
             Username = user.getString("displayName");
-            Login.setStringMemoryCache(photoObject.getParseUser("user").getUsername() + "profileName", Username );
+            Login.setStringMemoryCache(Username + "profileName", Username );
         }else {
 
-          Username =  Login.getStringFromMemoryCache(photoObject.getParseUser("user").getUsername() + "profileName" );
+          Username =  Login.getStringFromMemoryCache(Username + "profileName" );
 
 
         }

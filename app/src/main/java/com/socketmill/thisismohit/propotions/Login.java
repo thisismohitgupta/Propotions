@@ -110,8 +110,8 @@ public class Login extends AppCompatActivity {
         gifMovieView = (com.socketmill.thisismohit.propotions.widget.GifMovieView) findViewById(R.id.gifMovieView);
 
 
-        gifMovieView.setMinimumWidth(700);
-        gifMovieView.setMinimumHeight(1000);
+        gifMovieView.setMinimumWidth(getApplicationContext().getResources().getDisplayMetrics().widthPixels);
+        gifMovieView.setMinimumHeight(getApplicationContext().getResources().getDisplayMetrics().heightPixels);
 
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedIn(getApplicationContext(), MainActivity.class);
@@ -164,7 +164,7 @@ public class Login extends AppCompatActivity {
 
                                         Log.e("JSON", email);
 
-                                        SendFeedBackJob newJob = new SendFeedBackJob();
+                                        SendFeedBackJob newJob = new SendFeedBackJob(getApplicationContext());
                                         // newJob.activity = getParent() ;
                                         newJob.progressBar = progressBar;
 
@@ -181,8 +181,8 @@ public class Login extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), "Login with facebook done next step initiated", Toast.LENGTH_SHORT).show();
 
                                         newJob.execute();
-                                        login(profile.getId(), (profile.getId() + profile.getId()));
-                                        loginSuccessful();
+                                        //login(profile.getId(), (profile.getId() + profile.getId()));
+                                        //loginSuccessful();
 
 
                                     } catch (Exception e) {
