@@ -20,6 +20,7 @@ import com.parse.SaveCallback;
 
 import com.socketmill.thisismohit.propotions.Login;
 import com.socketmill.thisismohit.propotions.MainActivity;
+import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -61,8 +62,8 @@ public class uploadAfterClicking extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String[] Params) {
 
-        Bitmap imageSet = Login.getBitmapFromMemoryCacheLRU("upload" + PicturefileLocation);
-        Bitmap thumbSet = Login.getBitmapFromMemoryCacheLRU("thumb"+ThumbnailfileLocation);
+        Bitmap imageSet =  ThumbnailCache.cache.get("upload" + PicturefileLocation);
+        Bitmap thumbSet =  ThumbnailCache.cache.get("thumb"+ThumbnailfileLocation);
 
         ByteArrayOutputStream ImageStream = new ByteArrayOutputStream();
 

@@ -23,6 +23,7 @@ import java.util.List;
 import com.socketmill.thisismohit.propotions.Login;
 
 import com.socketmill.thisismohit.propotions.R;
+import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 public class PhotoDetail extends AppCompatActivity {
 
@@ -42,11 +43,12 @@ public class PhotoDetail extends AppCompatActivity {
 
         String ParseObjectID = getIntent().getStringExtra("PhotoId") ;
         String Username = getIntent().getStringExtra("UserThumb") ;
-        //String ParseUserObjectId = getIntent().getStringExtra("UserObjectID");
+        //String Fullname = getIntent().getStringExtra("UserObjectID");
 
-        bmp = Login.getBitmapFromMemoryCache(ParseObjectID);
-        pro = Login.getBitmapFromMemoryCache(Username + "thumb");
-        name = Login.getStringFromMemoryCache(Username + "profileName");
+        bmp = ThumbnailCache.cache.get(ParseObjectID);
+        pro = ThumbnailCache.cache.get(Username + "thumb");
+       //TODO: implement string cache
+        name =  "TODO";
 
         Drawable MainImageDrawable = new BitmapDrawable(getApplicationContext().getResources(),bmp);
         Drawable ProDrawable = new BitmapDrawable(getApplicationContext().getResources(),pro);

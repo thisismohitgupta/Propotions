@@ -2,34 +2,40 @@ package com.socketmill.thisismohit.propotions;
 
 
 
+
+import android.app.ActivityManager;
+
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+
+
+
 import android.os.Bundle;
 
 
 import android.os.PersistableBundle;
+
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+
 import android.view.Menu;
+
+
 import android.view.View;
-
-
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 
-import com.parse.ParseACL;
+
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -40,22 +46,30 @@ import com.parse.ParseUser;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import java.util.List;
 
 
-import com.socketmill.thisismohit.propotions.Home.Reactions;
-import com.socketmill.thisismohit.propotions.Home.commentDetail;
-import com.socketmill.thisismohit.propotions.Home.homeView;
+
+
+import com.socketmill.thisismohit.propotions.Home.RecyclerAdapter;
+
+import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 
 
 public class MainActivity extends AppCompatActivity {
 
-    LinearLayout ll;
+    RecyclerView ll;
     boolean likeFlag;
-    boolean didRunOnce ;
+    boolean didRunOnce;
 
-     boolean ranonce;
+    boolean ranonce;
+
+    private ThumbnailCache mCache;
+    private RecyclerAdapter mAdapter;
+    private RecyclerView mGridView;
+    private static final int LOADER_CURSOR = 1;
 
 
     @Override
@@ -66,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedInInternal(getApplicationContext());
-        getSupportActionBar().hide();
-        ll = (LinearLayout) findViewById(R.id.mainActivityLinearLayout);
+         getSupportActionBar().hide();
 
-        didRunOnce = true ;
+
+        didRunOnce = true;
         boolean runFromLocalDataBase = true;
         ParseQuery<ParseObject> MainQuery = this.PhotosToShowQueryMake(runFromLocalDataBase);
 
@@ -81,11 +95,19 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
 
-                        displayafterQuery(list,didRunOnce);
+                        //displayafterQuery(list, didRunOnce);
                     }
                 }
             }
         });
+
+
+
+
+
+
+        mGridView = (RecyclerView) findViewById(R.id.lists);
+        //mGridView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
     }
 
@@ -94,10 +116,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
 
-        if(didRunOnce|| ranonce) {
-            didRunOnce = false ;
-            ranonce = false ;
-            ll = (LinearLayout) findViewById(R.id.mainActivityLinearLayout);
+        if (didRunOnce || ranonce) {
+            didRunOnce = false;
+            ranonce = false;
+            ll = (RecyclerView) findViewById(R.id.lists);
 
 
             ParseQuery<ParseObject> MainQuery = this.PhotosToShowQueryMake(didRunOnce);
@@ -111,9 +133,9 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             if (ll.getChildCount() > 0) {
-                               ll.removeAllViews();
+                              //  ll.removeAllViews();
                             }
-                           displayafterQuery(list,didRunOnce);
+                            displayafterQuery(list, didRunOnce);
                         }
 
 
@@ -135,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(getApplicationContext(),"already ran once",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "already ran once", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -152,25 +174,24 @@ public class MainActivity extends AppCompatActivity {
     public ParseQuery<ParseObject> PhotosToShowQueryMake(boolean runfromlocaldatabase) {
 
 
-        ParseQuery FollowingActivityQuery = ParseQuery.getQuery("Activity");
+        ParseQuery<ParseObject> FollowingActivityQuery = ParseQuery.getQuery("Activity");
         FollowingActivityQuery.whereEqualTo("type", "follow");
         FollowingActivityQuery.whereEqualTo("fromUser", ParseUser.getCurrentUser());
 
         //photos from all the Users previously found
-        ParseQuery photosFromFollowedUserQuery = ParseQuery.getQuery("Photo");
+        ParseQuery<ParseObject> photosFromFollowedUserQuery = ParseQuery.getQuery("Photo");
         photosFromFollowedUserQuery.whereMatchesKeyInQuery("user", "toUser", FollowingActivityQuery);
         photosFromFollowedUserQuery.whereExists("image");
 
 
-
         //second query for the current users own pictures
-        ParseQuery photosFromCurrentUserQuery = ParseQuery.getQuery("Photo");
+        ParseQuery<ParseObject> photosFromCurrentUserQuery = ParseQuery.getQuery("Photo");
         photosFromCurrentUserQuery.whereEqualTo("user", ParseUser.getCurrentUser());
         photosFromCurrentUserQuery.whereExists("image");
 
         if (runfromlocaldatabase) {
             photosFromCurrentUserQuery.fromLocalDatastore();
-            photosFromFollowedUserQuery.fromLocalDatastore() ;
+            photosFromFollowedUserQuery.fromLocalDatastore();
 
         }
 
@@ -193,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
@@ -206,239 +225,204 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-    private void displayafterQuery(final List<ParseObject> list,final boolean didRunonce) {
+    private void displayafterQuery(final List<ParseObject> list, final boolean didRunonce) {
 
+        mAdapter = new RecyclerAdapter(getApplicationContext(),list);
+        mGridView.setLayoutManager(new LinearLayoutManager(this));
+        mGridView.setAdapter(mAdapter);
 
-        for (int i = 0; i < list.size(); i++) {
-            RelativeLayout Rl = new RelativeLayout(getApplicationContext());
-            final ImageView imageView = new ImageView(MainActivity.this);
-            ImageView profilePicView = new ImageView(MainActivity.this);
-            TextView NameViewText = new TextView(MainActivity.this);
-            final ImageView ShareButton = new ImageView(MainActivity.this);
-            final ImageView LikeButton = new ImageView(MainActivity.this);
-            final ImageView CommentButton = new ImageView(MainActivity.this);
-            TextView LikeCount = new TextView(MainActivity.this);
-            TextView CommentCount = new TextView(MainActivity.this);
+        mAdapter.notifyDataSetChanged();
 
-
-            RelativeLayout UnderPhoto = new RelativeLayout(MainActivity.this);
-            RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            Rl.setLayoutParams(RLParams);
-
-            Rl.setBackgroundColor(Color.WHITE);
-
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(getApplicationContext().getResources().getDisplayMetrics().widthPixels, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            RelativeLayout.LayoutParams profilePicParam = new RelativeLayout.LayoutParams(75, 75);
-            profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-
-            profilePicView.setId((i * i * i) + 2);
-            profilePicView.setLayoutParams(profilePicParam);
-
-
-            NameViewText.setTextColor(Color.BLUE);
-            NameViewText.setTextSize(17);
-            NameViewText.setId((i * i * i) + 1);
-
-
-            RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            nameViewParam.addRule(RelativeLayout.RIGHT_OF, profilePicView.getId());
-            NameViewText.setLayoutParams(nameViewParam);
-
-
-            params.addRule(RelativeLayout.BELOW, profilePicView.getId());
-            imageView.setLayoutParams(params);
-
-
-            RelativeLayout.LayoutParams UnderPhotoParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            UnderPhotoParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, imageView.getId());
-            UnderPhoto.setLayoutParams(UnderPhotoParams);
-            UnderPhoto.setBackgroundColor(Color.WHITE);
-
-            RelativeLayout.LayoutParams LikeButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            LikeButtonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            LikeButton.setLayoutParams(LikeButtonParams);
-            LikeButton.setId((i * i * i) + 5);
-
-            RelativeLayout.LayoutParams LikeCountParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            LikeCountParams.addRule(RelativeLayout.RIGHT_OF,LikeButton.getId());
-            LikeCount.setLayoutParams(LikeCountParams);
-            LikeCount.setId((i * i * i *i*i) + 7);
+        mGridView.setRecyclerListener(new RecyclerView.RecyclerListener() {
+            @Override
+            public void onViewRecycled(RecyclerView.ViewHolder holder) {
 
 
 
 
-            RelativeLayout.LayoutParams CommentButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            CommentButtonParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            CommentButton.setLayoutParams(CommentButtonParams);
-            CommentButton.setId((i * i * i) * 11);
+                final ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.displayImages);
 
-            RelativeLayout.LayoutParams CommentCountParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            CommentCountParams.addRule(RelativeLayout.RIGHT_OF, CommentButton.getId());
-            CommentCount.setLayoutParams(CommentCountParams);
-            CommentCount.setId((i * i * i *i*i) + 17);
+                final TextView text = (TextView) holder.itemView.findViewById(R.id.DisplayName);
+                if(imageView != null) {
+                  imageView.setImageBitmap(null);
+                    if(text != null) {
+                        Log.e("ERROR","view deleted");
 
-            RelativeLayout.LayoutParams ShareButtonParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            ShareButtonParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            ShareButton.setLayoutParams(ShareButtonParams);
-            ShareButton.setId((i * i * i) * 7);
-
-
-            final WeakReference<ImageView> imageViewReference = new WeakReference<ImageView>(imageView);
-            final WeakReference<ImageView> ProfilePicReff = new WeakReference<ImageView>(profilePicView);
-            final WeakReference<TextView> NameTag = new WeakReference<TextView>(NameViewText);
-            final WeakReference<ImageView> LikeButtonReff = new WeakReference<ImageView>(LikeButton);
-            final WeakReference<ImageView> CommentButtonReff = new WeakReference<ImageView>(CommentButton);
-            final WeakReference<ImageView> ShareButtonReff = new WeakReference<ImageView>(ShareButton);
-            final WeakReference<TextView>  LikeCountREFF = new WeakReference<TextView>(LikeCount) ;
-            final WeakReference<TextView>  CommentCountREFF = new WeakReference<TextView>(CommentCount) ;
-
-
-            Rl.addView(profilePicView);
-            Rl.addView(NameViewText);
-            Rl.addView(imageView);
-            UnderPhoto.addView(LikeButton);
-            UnderPhoto.addView(LikeCount);
-            UnderPhoto.addView(CommentCount);
-            UnderPhoto.addView(CommentButton);
-            UnderPhoto.addView(ShareButton);
-            Rl.addView(UnderPhoto);
-            ll.addView(Rl);
-
-            Bitmap bitmaps = Login.getBitmapFromMemoryCacheLRU(list.get(i).getObjectId());
-            final String ParseObjectId = list.get(i).getObjectId();
-
-             String ParseUsernames;
-             String ParseUserObjectIds  ;
-            try {
-
-                 ParseUsernames = list.get(i).getParseUser("user").fetchIfNeeded().getUsername();
-                ParseUserObjectIds= list.get(i).getParseObject("user").fetchIfNeeded().getObjectId();
-
-            } catch (Exception e){
-
-                ParseUsernames = null ;
-                ParseUserObjectIds = null;
-
-            }
-            final String ParseUsername = ParseUsernames;
-            final String ParseUserObjectId = ParseUserObjectIds ;
-
-            Bitmap ProThumb = Login.getBitmapFromMemoryCacheLRU(ParseUsernames + "thumb");
-            String ProfileName = Login.getStringFromMemoryCache(ParseUsernames + "profileName");
-
-            if (bitmaps == null) {
-
-// check the disk
-                bitmaps = Login.getBitmapFromMemoryCache(list.get(i).getObjectId());
-                ProThumb = Login.getBitmapFromMemoryCache(ParseUsernames + "thumb");
-
-                if (bitmaps == null) {
-                    Log.e("Error", "Bitmap is null");
-                    homeView myhome = new homeView(list.get(i), imageViewReference, ProfilePicReff, NameTag, MainActivity.this, LikeButtonReff, CommentButtonReff, ShareButtonReff,LikeCountREFF,CommentCountREFF);
-                    myhome.execute();
-
-                } else {
-
-                    Login.setBitmapMemoryCacheLRU(list.get(i).getObjectId(), bitmaps);
-                    if (ProThumb != null) {
-                        Login.setBitmapMemoryCacheLRU(ParseUsername + "thumb", ProThumb);
-
+                       // mAdapter.notifyDataSetChanged();
+                      //  text.setText(null);
                     }
+
                 }
             }
 
-            if (bitmaps != null) {
 
+        });
 
-                Log.e("Error", "Bitmap is not null");
-                Drawable drawable = new BitmapDrawable(getApplicationContext().getResources(), bitmaps);
-                Drawable drawablePro = new BitmapDrawable(getApplicationContext().getResources(), ProThumb);
-                //imageView.scale
+       // getLoaderManager().initLoader(LOADER_CURSOR, null, mCursorCallbacks(list));
 
-                ImageView viss = imageViewReference.get();
-
-                ImageView vissL = ProfilePicReff.get();
-
-                NameViewText.setText(ProfileName);
-                viss.setBackground(drawable);
-                vissL.setBackground(drawablePro);
-
-
-                bitmaps = null;
-
-
-                //Perfect space for some optimization
-                final ImageView LikeButtons = LikeButtonReff.get();
-                final ImageView CommentButtons = CommentButtonReff.get();
-                final ImageView ShareButtons = ShareButtonReff.get();
-                final Reactions Reaction = new Reactions(list.get(i),false);
-                Reaction.countTheNumberOfLikesOnParsePhoto(LikeCountREFF,"like");
-                Reaction.countTheNumberOfLikesOnParsePhoto(CommentCountREFF,"comment");
-
-
-
-                Reactions Reactionn = new Reactions(list.get(i),false);
-                Reactionn.picLikedorNotCheck(list.get(i), LikeButtonReff, false, true, LikeCountREFF);
-
-                CommentButton.setImageResource(R.drawable.chat20);
-                ShareButton.setImageResource(R.drawable.share11);
-                //////
-                final int tempI = i;
-
-                final boolean runfromLocalDatabase = false ;
-                LikeButtons.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-                         Reactions Reactionn = new Reactions(list.get(tempI),false);
-                        Reactionn.picLikedorNotCheck(list.get(tempI), LikeButtonReff, false, false,LikeCountREFF);
-                        Reactionn.countTheNumberOfLikesOnParsePhoto(LikeCountREFF,"like");
-                            //if he has not already liked
-
-
-
-
-                    }
-                });
-
-                ShareButtons.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-
-                CommentButtons.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Intent i = new Intent(getApplicationContext(), commentDetail.class);
-                        i.putExtra("PhotoId", ParseObjectId);
-                        i.putExtra("UserThumb", ParseUsername);
-                        i.putExtra("UserObjectID", ParseUserObjectId);
 
 
 //
-                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getApplicationContext().startActivity(i);
+//                //Perfect space for some optimization
+//                final ImageView LikeButtons = LikeButtonReff.get();
+//                final ImageView CommentButtons = CommentButtonReff.get();
+//                final ImageView ShareButtons = ShareButtonReff.get();
+//                final Reactions Reaction = new Reactions(list.get(i), false);
+//                Reaction.countTheNumberOfLikesOnParsePhoto(LikeCountREFF, "like");
+//                Reaction.countTheNumberOfLikesOnParsePhoto(CommentCountREFF, "comment");
+//
+//
+//                Reactions Reactionn = new Reactions(list.get(i), false);
+//                Reactionn.picLikedorNotCheck(list.get(i), LikeButtonReff, false, true, LikeCountREFF);
+//
+//                CommentButton.setImageResource(R.drawable.chat20);
+//                ShareButton.setImageResource(R.drawable.share11);
+//                //////
+//                final int tempI = i;
+//
+//                final boolean runfromLocalDatabase = false;
+//                LikeButtons.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//
+//                        Reactions Reactionn = new Reactions(list.get(tempI), false);
+//                        Reactionn.picLikedorNotCheck(list.get(tempI), LikeButtonReff, false, false, LikeCountREFF);
+//                        Reactionn.countTheNumberOfLikesOnParsePhoto(LikeCountREFF, "like");
+//                        //if he has not already liked
+//
+//
+//                    }
+//                });
+//
+//                ShareButtons.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                });
+//
+//                CommentButtons.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        Intent i = new Intent(getApplicationContext(), commentDetail.class);
+//                        i.putExtra("PhotoId", ParseObjectId);
+//                        i.putExtra("UserThumb", ParseUsername);
+//                        i.putExtra("UserObjectID", ParseUserObjectId);
+//
+//
+////
+//                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        getApplicationContext().startActivity(i);
+//
+//
+//                    }
+//                });
 
 
-                    }
-                });
-
-            }
 
 
         }
 
 
-    }
+
+
+//    private final LoaderManager.LoaderCallbacks<Cursor> mCursorCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+//
+//        @Override
+//        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//            final String[] columns = { BaseColumns._ID };
+//
+//            new CursorLoader(MainActivity.this);
+//            return new CursorLoader(MainActivity.this,
+//                    , columns, null, null,
+//                    MediaStore.Images.Media.DATE_ADDED + " DESC");
+//        }
+//
+//        @Override
+//        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//            mAdapter.swapCursor(data);
+//        }
+//
+//        @Override
+//        public void onLoaderReset(Loader<Cursor> loader) {
+//            mAdapter.swapCursor(null);
+//        }
+//    };
+
+
+    /**
+     * Adapter showing list of photos from
+     * {@link android.provider.MediaStore.Images}.
+     */
+//    private class PhotoAdapter extends CursorAdapter {
+//
+//
+//        public PhotoAdapter(Context context)
+//        {
+//            super(context, null, false);
+//        }
+//
+//
+//        @Override
+//        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+//            return LayoutInflater.from(context).inflate(R.layout.newsfeed_item, parent, false);
+//        }
+//
+//        @Override
+//        public void bindView(View view, Context context, Cursor cursor) {
+//            final long photoId = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
+//
+//
+//            final ImageView imageView = (ImageView) view.findViewById(R.id.displayImage);
+//
+//
+//            // Cancel any pending thumbnail task, since this view is now bound
+//            // to new thumbnail
+//            final ThumbnailAsyncTask oldTask = (ThumbnailAsyncTask) imageView.getTag();
+//            if (oldTask != null) {
+//                oldTask.cancel(false);
+//            }
+//
+//                // Cache enabled, try looking for cache hit
+//                final Bitmap cachedResult = mCache.get(photoId);
+//                if (cachedResult != null) {
+//                    imageView.setImageBitmap(cachedResult);
+//                    return;
+//                }
+//
+//
+//            // If we arrived here, either cache is disabled or cache miss, so we
+//            // need to kick task to load manually
+//            final ThumbnailAsyncTask task = new ThumbnailAsyncTask(imageView);
+//            imageView.setImageBitmap(null);
+//            imageView.setTag(task);
+//            task.execute(photoId);
+//        }
+//    }
+        @Override
+        public void onTrimMemory(int level) {
+            super.onTrimMemory(level);
+            Log.v("trim", "onTrimMemory() with level=" + level);
+
+            // Memory we can release here will help overall system performance, and
+            // make us a smaller target as the system looks for memory
+
+            if (level >= TRIM_MEMORY_MODERATE) { // 60
+                // Nearing middle of list of cached background apps; evict our
+                // entire thumbnail cache
+                Log.v("trim", "evicting entire thumbnail cache");
+                mCache.evictAll();
+
+            } else if (level >= TRIM_MEMORY_BACKGROUND) { // 40
+                // Entering list of cached background apps; evict oldest half of our
+                // thumbnail cache
+                Log.v("trim", "evicting oldest half of thumbnail cache");
+                mCache.trimToSize(mCache.size() / 2);
+            }
+        }
+
 
 }
-
-

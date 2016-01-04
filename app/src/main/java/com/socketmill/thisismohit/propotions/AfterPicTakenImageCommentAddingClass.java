@@ -17,6 +17,7 @@ import com.parse.Parse;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 import org.junit.After;
 
@@ -73,8 +74,8 @@ public class AfterPicTakenImageCommentAddingClass extends AppCompatActivity {
 
                 ParseUser currentUser = ParseUser.getCurrentUser();
 
-                Login.setBitmapMemoryCacheLRU("upload"+PicturefileLocation,imageSet);
-                Login.setBitmapMemoryCacheLRU("thumb"+ThumbnailfileLocation,thumbSet);
+                ThumbnailCache.cache.put("upload"+PicturefileLocation,imageSet);
+                ThumbnailCache.cache.put("thumb"+ThumbnailfileLocation,thumbSet);
 
 
 

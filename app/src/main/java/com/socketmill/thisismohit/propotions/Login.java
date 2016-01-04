@@ -50,7 +50,7 @@ public class Login extends AppCompatActivity {
 
 
     private static SimpleDiskCache StringCache ;
-    private static LruCache bitmapCahce ;
+
 
 
 
@@ -77,10 +77,10 @@ public class Login extends AppCompatActivity {
         final int cacheSize = 1024 * 1024 * memClass;
 
         try {
-            StringCache = SimpleDiskCache.open (getCacheDir(), 1, cacheSize / 5); // 10 MB
+           // StringCache = SimpleDiskCache.open (getCacheDir(), 1, cacheSize / 5); // 10 MB
 
-            bitmapCahce = new LruCache<String,Bitmap>(cacheSize/5);
-        } catch (IOException e) {
+
+        } catch (Exception e) {
 
             Log.e("ERROR","FUCKED UP");
             e.printStackTrace();
@@ -271,7 +271,7 @@ public class Login extends AppCompatActivity {
 
 
         try {
-            return StringCache.getBitmap(key).getBitmap();
+          //  return StringCache.getBitmap(key).getBitmap();
         } catch (Exception e) {
 
 
@@ -292,7 +292,7 @@ public class Login extends AppCompatActivity {
                 byte[] bitmapdata = bos.toByteArray();
                 bos.close();
                 InputStream bs = new ByteArrayInputStream(bitmapdata);
-                StringCache.put(key, bs);
+                //StringCache.put(key, bs);
                 bitmapdata = null ;
                 bitmap = null ;
                 bs.close();
@@ -304,64 +304,10 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public static String getStringFromMemoryCache(String key) {
-
-        String hello = null;
-        try {
-            hello = StringCache.getString(key).getString();
-        } catch (Exception e) {
 
 
 
-        }
-
-        return hello;
-
-    }
-
-    public static void setStringMemoryCache(String key, String value)  {
-        try {
-            if (getStringFromMemoryCache(key) == null) {
-
-                Log.e("ERROR", "name Set to cache");
-                StringCache.put(key, value);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    public static Bitmap getBitmapFromMemoryCacheLRU(String key) {
-
-
-
-        try {
-            return (Bitmap)bitmapCahce.get(key);
-        } catch (Exception e) {
-
-
-
-        }
-        return  null;
-
-    }
-
-    public static void setBitmapMemoryCacheLRU(String key, Bitmap bitmap) {
-        if (getBitmapFromMemoryCacheLRU(key) == null) {
-
-
-
-            try {
-
-                bitmapCahce.put(key,bitmap);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
 
 }
