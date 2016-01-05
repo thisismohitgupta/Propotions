@@ -8,7 +8,11 @@ import android.app.ActivityManager;
 import android.content.Context;
 
 
-
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 
@@ -227,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayafterQuery(final List<ParseObject> list, final boolean didRunonce) {
 
-        mAdapter = new RecyclerAdapter(getApplicationContext(),list);
+        mAdapter = new RecyclerAdapter(getApplicationContext(), list, getFilesDir());
         mGridView.setLayoutManager(new LinearLayoutManager(this));
         mGridView.setAdapter(mAdapter);
 
@@ -244,7 +248,35 @@ public class MainActivity extends AppCompatActivity {
 
                 final TextView text = (TextView) holder.itemView.findViewById(R.id.DisplayName);
                 if(imageView != null) {
-                  imageView.setImageBitmap(null);
+
+
+//                    final Drawable draw = imageView.getDrawable();
+//                    AsyncTask task = new AsyncTask() {
+//                        @Override
+//                        protected Object doInBackground(Object[] params) {
+//
+//                            Bitmap bmp = ((BitmapDrawable)draw).getBitmap();
+//
+//
+//
+//                            return null;
+//
+//
+//                        }
+//
+//                        @Override
+//                        protected void onPostExecute(Object o) {
+//                            super.onPostExecute(o);
+//                        }
+//                    } ;
+
+
+                    imageView.setImageBitmap(null);
+
+
+
+
+
                     if(text != null) {
                         Log.e("ERROR","view deleted");
 

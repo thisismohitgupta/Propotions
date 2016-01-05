@@ -42,84 +42,36 @@ public class Login extends AppCompatActivity {
 
     CallbackManager callbackManager;
     String email;
-
-
     ProgressBar progressBar;
-
     com.socketmill.thisismohit.propotions.widget.GifMovieView gifMovieView;
-
-
-    private static SimpleDiskCache StringCache ;
-
-
-
 
     @Override
     protected void onStart() {
         super.onStart();
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedIn(getApplicationContext(), MainActivity.class);
+
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getSupportActionBar().hide();
-
-
         FacebookSdk.sdkInitialize(getApplicationContext());
-        //final int maxMemorySize = (int)Runtime.getRuntime().maxMemory()/1024 ;
-        //final int cacheSize = maxMemorySize /10 ;
-
-
-        final int memClass = ((ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
-        final int cacheSize = 1024 * 1024 * memClass;
-
-        try {
-           // StringCache = SimpleDiskCache.open (getCacheDir(), 1, cacheSize / 5); // 10 MB
-
-
-        } catch (Exception e) {
-
-            Log.e("ERROR","FUCKED UP");
-            e.printStackTrace();
-        }
-
-
-
-
         setContentView(R.layout.activity_login);
-
-
         progressBar = (ProgressBar) findViewById(R.id.marker_progress_login);
-
-
         if (progressBar.getVisibility() != View.VISIBLE) {
-
-
             Toast.makeText(getApplicationContext(), "its not visible ", Toast.LENGTH_SHORT).show();
-
         } else {
-
-
             Toast.makeText(getApplicationContext(), "its visible ", Toast.LENGTH_SHORT).show();
-
             progressBar.setVisibility(View.INVISIBLE);
         }
         gifMovieView = (com.socketmill.thisismohit.propotions.widget.GifMovieView) findViewById(R.id.gifMovieView);
-
-
         gifMovieView.setMinimumWidth(getApplicationContext().getResources().getDisplayMetrics().widthPixels);
         gifMovieView.setMinimumHeight(getApplicationContext().getResources().getDisplayMetrics().heightPixels);
-
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedIn(getApplicationContext(), MainActivity.class);
-
-        // ProgressBar progree = (ProgressBar)findViewById(R.id.marker_progress_login);
-
-        //progree.setVisibility(View.INVISIBLE);
-
 
         callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -265,49 +217,5 @@ public class Login extends AppCompatActivity {
         // Toast.makeText(getApplicationContext(), "Wrong Stuff", Toast.LENGTH_SHORT).show();
         //(Login.this, "Login", "Username or Password is invalid.", false);
     }
-
-    public static Bitmap getBitmapFromMemoryCache(String key) {
-
-
-
-        try {
-          //  return StringCache.getBitmap(key).getBitmap();
-        } catch (Exception e) {
-
-
-
-        }
-        return  null;
-
-    }
-
-    public static void setBitmapMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemoryCache(key) == null) {
-
-
-
-            try {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                byte[] bitmapdata = bos.toByteArray();
-                bos.close();
-                InputStream bs = new ByteArrayInputStream(bitmapdata);
-                //StringCache.put(key, bs);
-                bitmapdata = null ;
-                bitmap = null ;
-                bs.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-
-
-
-
-
 
 }

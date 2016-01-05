@@ -18,6 +18,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.socketmill.thisismohit.propotions.background.notificationImagesAsync;
+import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -31,7 +32,6 @@ LinearLayout ll ;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         getSupportActionBar().hide();
-
 
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedInInternal(getApplicationContext());
@@ -103,7 +103,7 @@ LinearLayout ll ;
 
                             try {
 
-                                Bitmap UserThumb = Login.getBitmapFromMemoryCache(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
+                                Bitmap UserThumb = ThumbnailCache.DiskCache.get(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
                                 notificationImagesAsync notificationBacground = new notificationImagesAsync(list.get(i),ProfilePicReff,imageViewReference);
 
 
@@ -135,8 +135,8 @@ LinearLayout ll ;
 
                             try {
 
-                                Bitmap UserThumb = Login.getBitmapFromMemoryCache(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
-                                Bitmap    PhotoThumb = Login.getBitmapFromMemoryCache(list.get(i).getParseObject("photo").getObjectId()+"thumb");
+                                Bitmap UserThumb = ThumbnailCache.DiskCache.get(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
+                                Bitmap PhotoThumb = ThumbnailCache.DiskCache.get(list.get(i).getParseObject("photo").getObjectId() + "thumb");
                                 notificationImagesAsync notificationBacground = new notificationImagesAsync(list.get(i),ProfilePicReff,imageViewReference);
 
 

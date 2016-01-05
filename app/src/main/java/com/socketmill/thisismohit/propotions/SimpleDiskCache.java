@@ -180,6 +180,7 @@ public class SimpleDiskCache {
 		} finally {
 			IOUtils.closeQuietly(ois);
 		}
+
 	}
 
 	private String toInternalKey(String key) {

@@ -15,8 +15,6 @@ android {
 
             moduleName "JniBitmapOperationsLibrary"
             ldLibs "log",  "jnigraphics"
-            //optional: filter abis to compile for: abiFilters "x86", "armeabi-v7a"
-            //otherwise it will compile for all abis: "armeabi", "armeabi-v7a", "x86", and "mips"
 
         }
 
