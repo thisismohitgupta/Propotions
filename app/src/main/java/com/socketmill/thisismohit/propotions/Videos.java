@@ -150,7 +150,7 @@ public class Videos extends AppCompatActivity {
                     bitmap = BitmapFactory.decodeByteArray(data,0,data.length,options);
 //
 
-                    bitmap = Bitmap.createScaledBitmap(bitmap,900,900*bitmap.getHeight()/bitmap.getWidth(),false);
+                    bitmap = Bitmap.createScaledBitmap(bitmap,750,750*bitmap.getHeight()/bitmap.getWidth(),false);
 
                     //Bitmap cropImg = Bitmap.createScaledBitmap(bitmap,500,500*bitmap.getHeight()/bitmap.getWidth(),false);
 

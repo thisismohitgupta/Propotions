@@ -24,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 
@@ -131,8 +132,12 @@ public class SimpleDiskCache {
 			throws IOException {
 		OutputStream os = null;
 		try {
-			os = openStream(key, annotations);
-			IOUtils.copy(is, os);
+
+				//TODO rremove this try catch
+				os = openStream(key, annotations);
+				IOUtils.copy(is, os);
+
+
 		} finally {
 			if (os != null) os.close();
 		}

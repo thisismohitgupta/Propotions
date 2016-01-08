@@ -10,6 +10,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.socketmill.thisismohit.propotions.Login;
+import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 import java.lang.ref.WeakReference;
 
@@ -86,7 +87,7 @@ import java.lang.ref.WeakReference;
                 ImageView proView = profileImageWeakReff.get();
                 proView.setImageBitmap(thumbPro);
 
-                Login.setBitmapMemoryCache(notificationObject.getParseUser("fromUser").getUsername() + "thumb", thumbPro);
+                ThumbnailCache.cache.put(notificationObject.getParseUser("fromUser").getUsername() + "thumb", thumbPro);
 
 
             }
@@ -98,7 +99,7 @@ import java.lang.ref.WeakReference;
                 ImageView thumbPhotoView = photoThumbnailreff.get();
                 thumbPhotoView.setImageBitmap(thumbPhoto);
                 Log.e("Error", "What you know about meeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-                Login.setBitmapMemoryCache(PhotoId + "thumb", thumbPhoto);
+                ThumbnailCache.cache.put(PhotoId + "thumb", thumbPhoto);
 
             }
 

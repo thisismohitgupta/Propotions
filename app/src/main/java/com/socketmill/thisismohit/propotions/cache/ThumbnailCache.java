@@ -27,34 +27,16 @@ public class ThumbnailCache extends LruCache<String, Bitmap> {
 
 
     public static class DiskCache {
+        static public File file ;
 
 
         private static SimpleDiskCache StringCache;
 
 
-        public DiskCache(File file)
+        public DiskCache()
 
         {
-            long totalSize;
-            try {
-                Runtime info = Runtime.getRuntime();
-                totalSize = info.totalMemory();
-            } catch (Exception e) {
-                Runtime info = Runtime.getRuntime();
-                totalSize = info.totalMemory();
-                e.printStackTrace();
-            }
-            int size = (int) ((totalSize / 1024L) / 1024L);
 
-
-            try {
-                StringCache = SimpleDiskCache.open(file, 1, size / 5); // 10 MB
-
-            } catch (Exception e) {
-
-                Log.e("ERROR", "FUCKED UP");
-                e.printStackTrace();
-            }
 
 
         }
@@ -76,20 +58,48 @@ public class ThumbnailCache extends LruCache<String, Bitmap> {
         public static void put(String key, Bitmap bitmap) {
             if (get(key) == null) {
 
-
+ //TODO: MOVE THE READ WRITE OPERATIONS OUT OF THE TRY/CATCH BLOCK
                 try {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                     byte[] bitmapdata = bos.toByteArray();
-                    bos.close();
-                    InputStream bs = new ByteArrayInputStream(bitmapdata);
-                    StringCache.put(key, bs);
-                    bitmapdata = null;
-                    bitmap = null;
-                    bs.close();
 
-                } catch (IOException e) {
+                    InputStream bs = new ByteArrayInputStream(bitmapdata);
+
+                        if (StringCache == null){
+                            long totalSize;
+                            try {
+                                Runtime info = Runtime.getRuntime();
+                                totalSize = info.totalMemory();
+                            } catch (Exception e) {
+                                Runtime info = Runtime.getRuntime();
+                                totalSize = info.totalMemory();
+                                e.printStackTrace();
+                            }
+                            int size = (int) ((totalSize) );
+
+
+                                if(file != null) {
+                                    StringCache = SimpleDiskCache.open(file, 1, size*150); // 10 MB
+                                }
+
+
+                        }
+
+
+                        StringCache.put(key, bs);
+
+                         bos.close();
+                         bitmapdata = null;
+                         bitmap = null;
+                         bs.close();
+
+                } catch (Exception e) {
+                    Log.e("ERROR", "Disk not working");
+
                     e.printStackTrace();
+
+
                 }
 
             }
@@ -117,15 +127,27 @@ public class ThumbnailCache extends LruCache<String, Bitmap> {
 
            int size = (int) ( (totalSize / 1024L) / 1024L);
 
-           cachee = new ThumbnailCache(size*1024*1024);
+           cachee = new ThumbnailCache(size*1024*1024 / 2);
 
        }
 
 
+       public static void evitall() {
+           cachee.evictAll();
+
+       }
+       public static int size() {
+           return cachee.size();
+
+       }
+       public static void trimToSize(int max){
+           cachee.trimToSize(max);
+       }
+
        public static Bitmap get(String key){
            if(cachee.get(key) != null)
            {
-               Log.e("ERROR","I get cache i get cahe ");
+
            return    cachee.get(key);
            }else {
 

@@ -4,7 +4,10 @@
 #include <stdio.h>
 #include <android/bitmap.h>
 #include <cstring>
-#include <unistd.h>
+
+#include <math.h>
+
+
 
 #define  LOG_TAG    "Applog"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
@@ -52,6 +55,7 @@ extern "C"
 
 JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolder_jniLoadInImageView(
 		JNIEnv * env, jobject obj, jobject handle);
+JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolder_jniConvertGreyScale( JNIEnv * env, jobject obj, jobject handle );
 }
 
 class JniBitmap
@@ -317,45 +321,6 @@ JNIEXPORT jobject JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHo
     return env->NewDirectByteBuffer(jniBitmap, 0);
     }
 
-/**scales the image using the fastest, simplest algorithm called "nearest neighbor" */ //
-JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolder_jniScaleNNBitmap(
-	JNIEnv * env, jobject obj, jobject handle, uint32_t newWidth,
-	uint32_t newHeight)
-    {
-    JniBitmap* jniBitmap = (JniBitmap*) env->GetDirectBufferAddress(handle);
-    if (jniBitmap->_storedBitmapPixels == NULL)
-	return;
-    uint32_t oldWidth = jniBitmap->_bitmapInfo.width;
-    uint32_t oldHeight = jniBitmap->_bitmapInfo.height;
-    uint32_t* previousData = jniBitmap->_storedBitmapPixels;
-    uint32_t* newBitmapPixels = new uint32_t[newWidth * newHeight];
-    int x2, y2;
-    int whereToPut = 0;
-    for (int y = 0; y < newHeight; ++y)
-	{
-	for (int x = 0; x < newWidth; ++x)
-	    {
-	    x2 = x * oldWidth / newWidth;
-	    if (x2 < 0)
-		x2 = 0;
-	    else if (x2 >= oldWidth)
-		x2 = oldWidth - 1;
-	    y2 = y * oldHeight / newHeight;
-	    if (y2 < 0)
-		y2 = 0;
-	    else if (y2 >= oldHeight)
-		y2 = oldHeight - 1;
-	    newBitmapPixels[whereToPut++] = previousData[(y2 * oldWidth) + x2];
-	    //same as : newBitmapPixels[(y * newWidth) + x] = previousData[(y2 * oldWidth) + x2];
-	    }
-	}
-
-    delete[] previousData;
-    jniBitmap->_storedBitmapPixels = newBitmapPixels;
-    jniBitmap->_bitmapInfo.width = newWidth;
-    jniBitmap->_bitmapInfo.height = newHeight;
-    }
-
 /**scales the image using a high-quality algorithm called "Bilinear Interpolation"
  * code is based on old university code I've made in Java: http://stackoverflow.com/questions/23230047/trying-to-convert-bilinear-interpolation-code-from-java-to-c-c-on-android/23302384#23302384
  * */ //
@@ -503,6 +468,7 @@ JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolde
     uint32_t* previousData = jniBitmap->_storedBitmapPixels;
     int width = jniBitmap->_bitmapInfo.width, middle = width / 2, height =
 	    jniBitmap->_bitmapInfo.height;
+
     for (int y = 0; y < height; ++y)
 	{
 	//for each row, switch between the first pixels and the last ones
@@ -550,3 +516,101 @@ JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolde
 	    }
 	}
     }
+
+JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolder_jniConvertGreyScale( JNIEnv * env, jobject obj, jobject handle )
+{
+	JniBitmap* jniBitmap = (JniBitmap*) env->GetDirectBufferAddress(handle);
+	if (jniBitmap->_storedBitmapPixels == NULL) {
+		return;
+	}
+	uint32_t* pixels = jniBitmap->_storedBitmapPixels;
+
+	uint32_t width = jniBitmap->_bitmapInfo.width;
+	uint32_t height = jniBitmap->_bitmapInfo.height;
+	uint32_t* pixels2 =new uint32_t[width * height];
+	int whereToGet = 0;
+	ARGB gb,bc;
+
+	for (int y = 0; y < height ; ++y) {
+		for (int x = 0; x < width; ++x) {
+			//take from each row (up to bottom), from left to right
+
+			convertIntToArgb(pixels[whereToGet],&gb);
+
+			uint8_t red = gb.alpha ;
+			uint8_t green = gb.blue ;
+			uint8_t blue = gb.green ;
+
+
+			uint8_t gray = (uint8_t)floor((((double)red * (  0.2989))  + ((double)green * (  0.5870)) + ((double)blue * (  0.1140))) ) ;
+
+			//LOGE("red %d ,blue %d,green %d ,gray %d ",red,green,blue,gray);
+//			bc.alpha =(uint8_t) 128 ; // red
+//			bc.blue = (uint8_t)128; //green
+//			bc.green = (uint8_t)128 ; //blue
+//			bc.red = (uint8_t)255 ; // alpha
+
+			bc.alpha =gray ; // red
+			bc.blue = gray; //green
+			bc.green = gray; //blue
+			bc.red = gb.red ;// alpha
+
+			pixels2[whereToGet] =(uint32_t) convertArgbToInt(bc);
+
+
+
+
+			++whereToGet;
+		}
+	}
+
+	delete[] pixels  ;
+
+	jniBitmap->_storedBitmapPixels = pixels2;
+
+
+}
+
+/**scales the image using the fastest, simplest algorithm called "nearest neighbor" */ //
+JNIEXPORT void JNICALL Java_com_socketmill_thisismohit_propotions_JniBitmapHolder_jniScaleNNBitmap(
+		JNIEnv * env, jobject obj, jobject handle, uint32_t newWidth,
+		uint32_t newHeight)
+{
+	JniBitmap* jniBitmap = (JniBitmap*) env->GetDirectBufferAddress(handle);
+	if (jniBitmap->_storedBitmapPixels == NULL)
+		return;
+	uint32_t oldWidth = jniBitmap->_bitmapInfo.width;
+	uint32_t oldHeight = jniBitmap->_bitmapInfo.height;
+	uint32_t* previousData = jniBitmap->_storedBitmapPixels;
+	uint32_t* newBitmapPixels = new uint32_t[newWidth * newHeight];
+	int x2, y2;
+	int whereToPut = 0;
+	for (int y = 0; y < newHeight; ++y)
+	{
+		for (int x = 0; x < newWidth; ++x)
+		{
+			x2 = x * oldWidth / newWidth;
+			if (x2 < 0)
+				x2 = 0;
+			else if (x2 >= oldWidth)
+				x2 = oldWidth - 1;
+			y2 = y * oldHeight / newHeight;
+			if (y2 < 0)
+				y2 = 0;
+			else if (y2 >= oldHeight)
+				y2 = oldHeight - 1;
+			newBitmapPixels[whereToPut++] = previousData[(y2 * oldWidth) + x2];
+			//same as : newBitmapPixels[(y * newWidth) + x] = previousData[(y2 * oldWidth) + x2];
+		}
+	}
+
+	delete[] previousData;
+	jniBitmap->_storedBitmapPixels = newBitmapPixels;
+	jniBitmap->_bitmapInfo.width = newWidth;
+	jniBitmap->_bitmapInfo.height = newHeight;
+}
+
+
+// converts images into greyscale
+
+

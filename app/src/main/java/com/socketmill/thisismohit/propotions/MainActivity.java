@@ -3,23 +3,14 @@ package com.socketmill.thisismohit.propotions;
 
 
 
-import android.app.ActivityManager;
 
-import android.content.Context;
-
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 
 import android.os.PersistableBundle;
 
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.ActionMenuItemView;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 
 
-import android.view.View;
 import android.widget.ImageView;
 
 import android.widget.TextView;
@@ -48,7 +38,7 @@ import com.parse.ParseUser;
 
 
 
-import java.lang.ref.WeakReference;
+
 import java.util.ArrayList;
 
 import java.util.List;
@@ -58,6 +48,7 @@ import java.util.List;
 
 import com.socketmill.thisismohit.propotions.Home.RecyclerAdapter;
 
+import com.socketmill.thisismohit.propotions.Home.RecyclerToListViewScrollListener;
 import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 
@@ -176,45 +167,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public ParseQuery<ParseObject> PhotosToShowQueryMake(boolean runfromlocaldatabase) {
-
-
         ParseQuery<ParseObject> FollowingActivityQuery = ParseQuery.getQuery("Activity");
         FollowingActivityQuery.whereEqualTo("type", "follow");
         FollowingActivityQuery.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-
         //photos from all the Users previously found
         ParseQuery<ParseObject> photosFromFollowedUserQuery = ParseQuery.getQuery("Photo");
         photosFromFollowedUserQuery.whereMatchesKeyInQuery("user", "toUser", FollowingActivityQuery);
         photosFromFollowedUserQuery.whereExists("image");
-
-
         //second query for the current users own pictures
         ParseQuery<ParseObject> photosFromCurrentUserQuery = ParseQuery.getQuery("Photo");
         photosFromCurrentUserQuery.whereEqualTo("user", ParseUser.getCurrentUser());
         photosFromCurrentUserQuery.whereExists("image");
-
         if (runfromlocaldatabase) {
             photosFromCurrentUserQuery.fromLocalDatastore();
             photosFromFollowedUserQuery.fromLocalDatastore();
-
         }
-
         // Final mega query
         List<ParseQuery<ParseObject>> QueryList = new ArrayList<ParseQuery<ParseObject>>();
         QueryList.add(photosFromFollowedUserQuery);
         QueryList.add(photosFromCurrentUserQuery);
         ParseQuery<ParseObject> megaQuery = ParseQuery.or(QueryList);
-
         megaQuery.include("user");
         megaQuery.orderByDescending("createdAt");
-
         if (runfromlocaldatabase) {
-
             megaQuery.fromLocalDatastore();
-
         }
         return megaQuery;
-
     }
 
 
@@ -230,67 +208,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayafterQuery(final List<ParseObject> list, final boolean didRunonce) {
-
-        mAdapter = new RecyclerAdapter(getApplicationContext(), list, getFilesDir());
+        mAdapter = new RecyclerAdapter(getApplicationContext(), list, getCacheDir());
         mGridView.setLayoutManager(new LinearLayoutManager(this));
         mGridView.setAdapter(mAdapter);
-
         mAdapter.notifyDataSetChanged();
-
         mGridView.setRecyclerListener(new RecyclerView.RecyclerListener() {
             @Override
             public void onViewRecycled(RecyclerView.ViewHolder holder) {
-
-
-
 
                 final ImageView imageView = (ImageView) holder.itemView.findViewById(R.id.displayImages);
 
                 final TextView text = (TextView) holder.itemView.findViewById(R.id.DisplayName);
                 if(imageView != null) {
-
-
-//                    final Drawable draw = imageView.getDrawable();
-//                    AsyncTask task = new AsyncTask() {
-//                        @Override
-//                        protected Object doInBackground(Object[] params) {
-//
-//                            Bitmap bmp = ((BitmapDrawable)draw).getBitmap();
-//
-//
-//
-//                            return null;
-//
-//
-//                        }
-//
-//                        @Override
-//                        protected void onPostExecute(Object o) {
-//                            super.onPostExecute(o);
-//                        }
-//                    } ;
-
-
                     imageView.setImageBitmap(null);
-
-
-
-
-
                     if(text != null) {
                         Log.e("ERROR","view deleted");
-
-                       // mAdapter.notifyDataSetChanged();
-                      //  text.setText(null);
                     }
-
                 }
             }
-
-
         });
-
-       // getLoaderManager().initLoader(LOADER_CURSOR, null, mCursorCallbacks(list));
+        mGridView.setLayoutManager(new RecyclerToListViewScrollListener(this));
 
 
 
@@ -352,88 +289,12 @@ public class MainActivity extends AppCompatActivity {
 //
 //                    }
 //                });
-
-
-
-
         }
-
-
-
-
-//    private final LoaderManager.LoaderCallbacks<Cursor> mCursorCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
-//
-//        @Override
-//        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-//            final String[] columns = { BaseColumns._ID };
-//
-//            new CursorLoader(MainActivity.this);
-//            return new CursorLoader(MainActivity.this,
-//                    , columns, null, null,
-//                    MediaStore.Images.Media.DATE_ADDED + " DESC");
-//        }
-//
-//        @Override
-//        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//            mAdapter.swapCursor(data);
-//        }
-//
-//        @Override
-//        public void onLoaderReset(Loader<Cursor> loader) {
-//            mAdapter.swapCursor(null);
-//        }
-//    };
-
-
     /**
      * Adapter showing list of photos from
      * {@link android.provider.MediaStore.Images}.
      */
-//    private class PhotoAdapter extends CursorAdapter {
-//
-//
-//        public PhotoAdapter(Context context)
-//        {
-//            super(context, null, false);
-//        }
-//
-//
-//        @Override
-//        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-//            return LayoutInflater.from(context).inflate(R.layout.newsfeed_item, parent, false);
-//        }
-//
-//        @Override
-//        public void bindView(View view, Context context, Cursor cursor) {
-//            final long photoId = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
-//
-//
-//            final ImageView imageView = (ImageView) view.findViewById(R.id.displayImage);
-//
-//
-//            // Cancel any pending thumbnail task, since this view is now bound
-//            // to new thumbnail
-//            final ThumbnailAsyncTask oldTask = (ThumbnailAsyncTask) imageView.getTag();
-//            if (oldTask != null) {
-//                oldTask.cancel(false);
-//            }
-//
-//                // Cache enabled, try looking for cache hit
-//                final Bitmap cachedResult = mCache.get(photoId);
-//                if (cachedResult != null) {
-//                    imageView.setImageBitmap(cachedResult);
-//                    return;
-//                }
-//
-//
-//            // If we arrived here, either cache is disabled or cache miss, so we
-//            // need to kick task to load manually
-//            final ThumbnailAsyncTask task = new ThumbnailAsyncTask(imageView);
-//            imageView.setImageBitmap(null);
-//            imageView.setTag(task);
-//            task.execute(photoId);
-//        }
-//    }
+
         @Override
         public void onTrimMemory(int level) {
             super.onTrimMemory(level);
@@ -446,13 +307,13 @@ public class MainActivity extends AppCompatActivity {
                 // Nearing middle of list of cached background apps; evict our
                 // entire thumbnail cache
                 Log.v("trim", "evicting entire thumbnail cache");
-                mCache.evictAll();
+                ThumbnailCache.cache.evitall();
 
             } else if (level >= TRIM_MEMORY_BACKGROUND) { // 40
                 // Entering list of cached background apps; evict oldest half of our
                 // thumbnail cache
                 Log.v("trim", "evicting oldest half of thumbnail cache");
-                mCache.trimToSize(mCache.size() / 2);
+                ThumbnailCache.cache.trimToSize(ThumbnailCache.cache.size() / 2);
             }
         }
 

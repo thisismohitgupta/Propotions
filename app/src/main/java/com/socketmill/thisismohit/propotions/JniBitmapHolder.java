@@ -36,8 +36,9 @@ public class JniBitmapHolder
   private native void jniScaleBIBitmap(ByteBuffer handler,final int newWidth,final int newHeight);
 
   private native void jniFlipBitmapHorizontal(ByteBuffer handler);
-
+  private native void jniConvertGreyScale(ByteBuffer handler);
   private native void jniFlipBitmapVertical(ByteBuffer handler);
+
 
 
 
@@ -154,7 +155,18 @@ public class JniBitmapHolder
     jniFreeBitmapData(_handler);
     _handler=null;
     }
+    public void convertGreyScale(){
 
+      if(_handler==null) {
+        return;
+      }
+
+        jniConvertGreyScale(_handler);
+
+
+
+
+    }
   @Override
   protected void finalize() throws Throwable
     {
@@ -164,4 +176,6 @@ public class JniBitmapHolder
     Log.w("DEBUG","JNI bitmap wasn't freed nicely.please remember to free the bitmap as soon as you can");
     freeBitmap();
     }
+
+
   }

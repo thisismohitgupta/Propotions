@@ -27,6 +27,7 @@ import com.socketmill.thisismohit.propotions.cache.ThumbnailCache;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -43,8 +44,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder
     JniBitmapHolder bitmapHolder ;
 
 
-    static ThumbnailCache.DiskCache diskCache;
-
     static ThumbnailCache.cache cache;
 
     public RecyclerAdapter(Context context, List<ParseObject> listItemsList, File cacheFile) {
@@ -52,9 +51,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder
         this.listItemsList = listItemsList ;
 
         cache =  new ThumbnailCache.cache();
-        diskCache = new ThumbnailCache.DiskCache(cacheFile);
 
-
+        ThumbnailCache.DiskCache.file = cacheFile ;
     }
 
     @Override
@@ -89,97 +87,109 @@ public class RecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder
             oldTask.cancel(false);
         }
 
+        Bitmap images ;
         final DisplayMetrics matrix = mainImage.get().getContext().getResources().getDisplayMetrics();
 
-            if (cache.get(listItem.getObjectId()) == null) {
+            if (ThumbnailCache.cache.get(listItem.getObjectId()) == null) {
 
 
-                if (ThumbnailCache.DiskCache.get(listItem.getObjectId()) == null) {
 
 
-                    AsyncTask task = new AsyncTask() {
-
-                        byte[] datapro;
-                        byte[] dataMain;
-                        Bitmap bitmaps;
-                        Bitmap pro;
-
-                        @Override
-                        protected Object doInBackground(Object[] params) {
 
 
+                AsyncTask taskAnother = new AsyncTask() {
+                    Bitmap images;
+                    @Override
+                    protected Object doInBackground(Object[] params) {
+                        images = ThumbnailCache.DiskCache.get(listItem.getObjectId());
+                        if(images == null ) {
+
+                            Bitmap pro;
                             ParseFile fileObject = (ParseFile) listItem.get("image");
-
                             ParseFile thumObject = (ParseFile) listItem.getParseUser("user").get("profilePictureSmall");
                             try {
-                                dataMain = fileObject.getData();
-                                Log.e("ERROR", "Images Were Downloaded :(");
-                                datapro = thumObject.getData();
+                                byte[] dataMain = fileObject.getData();
+                                // byte[]  datapro = thumObject.getData();
                                 if (dataMain != null) {
                                     BitmapFactory.Options options = new BitmapFactory.Options();
-                                    options.inJustDecodeBounds = false;
-                                    bitmaps = BitmapFactory.decodeByteArray(dataMain, 0, dataMain.length, options);
+                                    options.inJustDecodeBounds = false ;
+                                    images = BitmapFactory.decodeByteArray(dataMain, 0, dataMain.length, options);
                                     bitmapHolder = new JniBitmapHolder();
-                                    bitmapHolder.storeBitmap(bitmaps);
-                                    bitmapHolder.scaleBitmap(matrix.widthPixels, matrix.widthPixels * bitmaps.getWidth() / bitmaps.getHeight(), JniBitmapHolder.ScaleMethod.NearestNeighbour);
-                                    pro = BitmapFactory.decodeByteArray(datapro, 0, datapro.length, options);
-                                    bitmaps.recycle();
-                                    cache.put(listItem.getObjectId(), bitmapHolder.getBitmapAndFree());
-                                    ThumbnailCache.DiskCache.put(listItem.getObjectId(), cache.get(listItem.getObjectId()));
+                                    bitmapHolder.storeBitmap(images);
+                                    //bitmapHolder.convertGreyScale();
+                                    bitmapHolder.scaleBitmap(matrix.widthPixels, matrix.widthPixels * images.getWidth() / images.getHeight(), JniBitmapHolder.ScaleMethod.BilinearInterpolation);
+                                    //   pro = BitmapFactory.decodeByteArray(datapro, 0, datapro.length, options);
+
+
 
                                 }
 
 
                             } catch (Exception e) {
-
-                                Log.e("ERROR", e.getMessage());
+                                e.printStackTrace();
                             }
-                            return null;
+                        } else {
+                            Log.e("ERROR", "Disk cache used");
+                            //ThumbnailCache.cache.put(listItem.getObjectId(), images);
                         }
 
-                        @Override
-                        protected void onPostExecute(Object o) {
-                            super.onPostExecute(o);
-                            ImageView imageview = mainImage.get();
-                            ImageView imageview2 = profileImage.get();
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        super.onPostExecute(o);
+
+                        ImageView imageview = mainImage.get();
+                        ImageView imageview2 = profileImage.get();
+                        images = bitmapHolder.getBitmapAndFree();
+
+                        if (images != null) {
                             if (imageview != null) {
-                                if (listItem.getObjectId() == null) {
-                                    imageview.setImageBitmap(null);
-                                } else {
-                                    if (bitmapHolder != null) {
+                                imageview.setImageBitmap(images);
+                                //imageview2.setImageBitmap(pro);
+                                ThumbnailCache.cache.put(listItem.getObjectId(), images);
+                                AsyncTask  taskmee = new AsyncTask() {
+                                    @Override
+                                    protected Object doInBackground(Object[] params) {
+                                        ThumbnailCache.DiskCache.put(listItem.getObjectId(), ThumbnailCache.cache.get(listItem.getObjectId()));
 
-                                        imageview.setImageBitmap(cache.get(listItem.getObjectId()));
-                                        imageview2.setImageBitmap(pro);
-                                    } else {
-                                        imageview.setImageBitmap(null);
-
+                                        return null;
                                     }
-                                }
+                                };
 
+                                taskmee.execute();
                             }
-
-                            ImageView proimageView = profileImage.get();
-                            if (proimageView != null) {
-                                proimageView.setImageBitmap(pro);
-                            }
-                            // RecyclerAdapter.this.notifyDataSetChanged();
+                        } else {
+                            imageview.setImageBitmap(null);
                         }
-                    };
-
-                    holder.displayImage.setTag(task);
-
-                    task.execute();
 
 
-                } else {
-                    //disk is not null
+
+//                        ImageView proimageView = profileImage.get();
+//                        if (proimageView != null) {
+//                            // proimageView.setImageBitmap(pro);
+//                        }
+                            // RecyclerAdapter.this.notifyDataSetChanged();
+
+                    }
 
 
-                    cache.put(listItem.getObjectId(), ThumbnailCache.DiskCache.get(listItem.getObjectId()));
 
-                    holder.displayImage.setImageBitmap(cache.get(listItem.getObjectId()));
 
-                }
+                } ;
+
+
+
+
+
+
+
+
+                    mainImage.get().setTag(taskAnother);
+
+                taskAnother.execute();
+
 
 
             } else {

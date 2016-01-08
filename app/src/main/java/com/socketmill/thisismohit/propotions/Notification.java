@@ -103,7 +103,8 @@ LinearLayout ll ;
 
                             try {
 
-                                Bitmap UserThumb = ThumbnailCache.DiskCache.get(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
+                                Bitmap UserThumb = null ;
+                               // Bitmap UserThumb = diskCache.get(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
                                 notificationImagesAsync notificationBacground = new notificationImagesAsync(list.get(i),ProfilePicReff,imageViewReference);
 
 
@@ -135,8 +136,8 @@ LinearLayout ll ;
 
                             try {
 
-                                Bitmap UserThumb = ThumbnailCache.DiskCache.get(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
-                                Bitmap PhotoThumb = ThumbnailCache.DiskCache.get(list.get(i).getParseObject("photo").getObjectId() + "thumb");
+                                Bitmap UserThumb  = null; // = ThumbnailCache.DiskCache.get(list.get(i).getParseUser("fromUser").getUsername() + "thumb");
+                                Bitmap PhotoThumb = null ; //`e.get(list.get(i).getParseObject("photo").getObjectId() + "thumb");
                                 notificationImagesAsync notificationBacground = new notificationImagesAsync(list.get(i),ProfilePicReff,imageViewReference);
 
 

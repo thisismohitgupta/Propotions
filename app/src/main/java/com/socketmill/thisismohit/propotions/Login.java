@@ -30,11 +30,6 @@ import com.parse.ParseUser;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 
