@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -66,46 +67,27 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
         String accessToken = AccessToken ;
         String email = EMAIL;
         profile =  com.facebook.Profile.getCurrentProfile();
-        User.put("displayName", profile.getName());
-        User.put("facebookId", profile.getId());
-        User.setUsername(profile.getId());
-        try
-        {
-                User.put("FBaccessToken", accessToken);
-                User.setEmail(email);
-        }
-        catch (Exception e){
 
-            Log.e("ERROR","Failed");
-        }
-        User.setPassword(profile.getId() + profile.getId());
         ParseQuery<ParseUser> query = ParseUser.getQuery();// put name of your Parse class here
         query.whereEqualTo("username", profile.getId());
 
 
         try {
-            List<ParseUser> list = query.find();
-
+            ParseUser list = query.getFirst();
             if (list == null)
             {
                 //  parseSignUp() ;
+                Log.e("ERROR", "lsign uppppp");
+
                 UserFoundOrNot = false ;
 
             }
             else
             {
-                if  (list.isEmpty())
-                {
 
-
-                    UserFoundOrNot = false ;
-                    //    parseSignUp();
-                }
-                else
-                {
                     UserFoundOrNot = true ;
 
-                }
+
 
             }
 
@@ -115,6 +97,8 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
 
 
         if(UserFoundOrNot){
+
+            Log.e("ERROR", "login like a nigga");
 
             login(profile.getId(), (profile.getId() + profile.getId()));
 
@@ -227,6 +211,20 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
     }
     public void parseSignUp()
         {
+            String accessToken = AccessToken;
+            String email = EMAIL;
+            profile = com.facebook.Profile.getCurrentProfile();
+            User.put("displayName", profile.getName());
+            User.put("facebookId", profile.getId());
+            User.setUsername(profile.getId());
+            try {
+                User.put("FBaccessToken", accessToken);
+                User.setEmail(email);
+            } catch (Exception e) {
+
+                Log.e("ERROR", "Failed");
+            }
+            User.setPassword(profile.getId() + profile.getId());
             Uri ProfilePicBigUri = profile.getProfilePictureUri(500, 500);
             Uri ProfilePicSmallUri = profile.getProfilePictureUri(100, 100);
             byte[] Byte = geByteArrayFromURL(ProfilePicBigUri.toString());
@@ -266,6 +264,7 @@ public class SendFeedBackJob extends AsyncTask<String, Void, String> {
         super.onPostExecute(s);
         if (progressBar.getVisibility() == View.VISIBLE ) {
             progressBar.setVisibility(View.INVISIBLE);
+
         }
 
 

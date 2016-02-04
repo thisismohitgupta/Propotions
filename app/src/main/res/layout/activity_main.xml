@@ -16,6 +16,15 @@
         >
 
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HOME"
+            android:textSize="20sp"
+            android:textColor="@color/whitelikeabitcj"
+            android:layout_gravity="center"
+
+            />
     </android.support.v7.widget.Toolbar>
 
 
@@ -26,57 +35,78 @@
         android:layout_alignParentBottom="true"
         android:background="@color/BlackBottom">
 
-
-        <LinearLayout
-            android:id="@+id/linear"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
 
 
-            <!--<ImageView-->
-            <!--android:id="@+id/home"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/house158"-->
-            <!--android:layout_marginLeft="15dp"-->
-            <!--android:layout_marginRight="30dp"-->
+            >
 
-            <!--/>-->
-            <!--<ImageView-->
-            <!--android:id="@+id/explore"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/compass98"-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/house158"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/home" />
 
-            <!--android:layout_marginRight="30dp"-->
-            <!--/>-->
-            <!--<ImageView-->
-            <!--android:id="@+id/video"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/video28"-->
-            <!--android:layout_marginRight="30dp"               />-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/compass98"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/explore"
+                android:layout_toRightOf="@+id/home"
 
-            <!--<ImageView-->
-            <!--android:id="@+id/notification"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/bells9"-->
-            <!--android:layout_marginRight="30dp"-->
-            <!--/>-->
+                />
 
-
-            <!--<ImageView-->
-            <!--android:id="@+id/profile"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@drawable/profile10"-->
-            <!--android:layout_marginRight="30dp"-->
-            <!--/>-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/video28"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/video"
+                android:layout_toRightOf="@+id/explore"
 
 
-        </LinearLayout>
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bells9"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/notification"
+                android:layout_toRightOf="@+id/video"
+
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/profile10"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/profile"
+                android:layout_toRightOf="@+id/notification"
+
+
+                />
+
+        </RelativeLayout>
+
+
     </android.support.v7.widget.Toolbar>
 
 

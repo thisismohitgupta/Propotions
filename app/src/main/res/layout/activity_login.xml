@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:background="@color/BlackBottom"
 
     tools:context="com.socketmill.thisismohit.propotions.Login">
-
 
 
   <!--  <WebView
@@ -24,17 +22,39 @@
 
         />-->
 
-    <com.socketmill.thisismohit.propotions.widget.GifMovieView
+  <!--<com.socketmill.thisismohit.propotions.widget.GifMovieView-->
 
 
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/gifMovieView"
+  <!--&lt;!&ndash;android:layout_width="fill_parent"&ndash;&gt;-->
+  <!--&lt;!&ndash;android:layout_height="fill_parent"&ndash;&gt;-->
+  <!--&lt;!&ndash;android:id="@+id/gifMovieView"&ndash;&gt;-->
 
-        custom:gif="@drawable/hello"
+  <!--custom:gif="@drawable/hello"-->
+
+
+  <!--/>-->
+  <VideoView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/videoView"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
 
 
        />
+
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+
+
+      />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"

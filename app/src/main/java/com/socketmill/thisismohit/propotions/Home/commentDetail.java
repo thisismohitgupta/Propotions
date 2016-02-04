@@ -44,6 +44,7 @@ public class commentDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         setContentView(R.layout.commentfragment);
 
         getSupportActionBar().setTitle("Comments");
@@ -231,7 +232,7 @@ public class commentDetail extends AppCompatActivity {
                         }
 
                     }
-                },10000);
+                }, 3000);
 
 
             }

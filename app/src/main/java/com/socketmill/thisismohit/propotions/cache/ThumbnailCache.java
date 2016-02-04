@@ -79,13 +79,15 @@ public class ThumbnailCache extends LruCache<String, Bitmap> {
                             int size = (int) ((totalSize) );
 
 
-                                if(file != null) {
-                                    StringCache = SimpleDiskCache.open(file, 1, size*150); // 10 MB
+                            if (file != null && StringCache != null) {
+                                StringCache = SimpleDiskCache.open(file, 1, size * 150); // 10 MB
                                 }
 
 
                         }
 
+
+                    Log.e("ERROR", bs.toString());
 
                         StringCache.put(key, bs);
 

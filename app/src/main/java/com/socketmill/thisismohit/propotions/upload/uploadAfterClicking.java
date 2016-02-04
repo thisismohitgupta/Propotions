@@ -168,8 +168,7 @@ public class uploadAfterClicking extends AsyncTask<String, Void, String> {
 
                   Intent i = new Intent(context, MainActivity.class);
                   i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-
-                  //i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                  i.putExtra("reload", "PleaseReload");
                   i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                   context.startActivity(i);
               }

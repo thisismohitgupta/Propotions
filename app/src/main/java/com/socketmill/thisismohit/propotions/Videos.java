@@ -83,6 +83,7 @@ public class Videos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        overridePendingTransition(0, 0);
 
         // getSupportActionBar().hide();
         setContentView(R.layout.activity_videos);
@@ -155,7 +156,8 @@ public class Videos extends AppCompatActivity {
                     //Bitmap cropImg = Bitmap.createScaledBitmap(bitmap,500,500*bitmap.getHeight()/bitmap.getWidth(),false);
 
 
-                    int stuff ;
+                    int stuff, stuff2;
+
                     if (bitmap.getHeight() > bitmap.getWidth()){
                          stuff = bitmap.getWidth() ;
 
@@ -174,7 +176,13 @@ public class Videos extends AppCompatActivity {
 
                     bitmap.recycle();
 
-                    Thumnail = Bitmap.createBitmap(Thumnail, 0, 0, Thumnail.getWidth(), Thumnail.getHeight(), matrix, true);
+                    if (Thumnail.getHeight() > Thumnail.getWidth()) {
+                        stuff2 = Thumnail.getWidth();
+
+                    } else {
+                        stuff2 = Thumnail.getHeight();
+                    }
+                    Thumnail = Bitmap.createBitmap(Thumnail, 0, 0, stuff2, stuff2, matrix, true);
 
 
 

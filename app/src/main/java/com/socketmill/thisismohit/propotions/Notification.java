@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,6 +31,7 @@ LinearLayout ll ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_notification);
         getSupportActionBar().hide();
 
@@ -52,16 +54,22 @@ LinearLayout ll ;
                         TextView notifiationText = new TextView(Notification.this);
                         ImageView profilePicView = new ImageView(Notification.this);
                         ImageView ThumbPicView = new ImageView(Notification.this);
-                        RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 75);
 
+                        int pixelPerDp = (int) (getApplicationContext().getResources().getDisplayMetrics().density + 0.5f);
+
+                        RelativeLayout.LayoutParams RLParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (pixelPerDp * 50));
+
+                        RLParams.setMargins(0, pixelPerDp * 10, 0, pixelPerDp * 20);
                         Rl.setLayoutParams(RLParams);
 
 
                         RelativeLayout.LayoutParams nameViewParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        nameViewParam.setMargins(pixelPerDp * 60, pixelPerDp * 20, 0, 0);
                         NameViewText.setLayoutParams(nameViewParam);
+
                         NameViewText.setTextColor(Color.BLUE);
 
-                        NameViewText.setTextSize(8);
+                        NameViewText.setTextSize(10);
 
                         NameViewText.setId((i * i * i) + 1);
 
@@ -77,9 +85,11 @@ LinearLayout ll ;
 
                         notificationParams.addRule(RelativeLayout.RIGHT_OF, NameViewText.getId());
 
-                        notifiationText.setTextSize(8);
+                        notificationParams.setMargins(0, pixelPerDp * 20, 0, 0);
 
-                        RelativeLayout.LayoutParams profilePicParam = new RelativeLayout.LayoutParams(75, 75);
+                        notifiationText.setTextSize(10);
+
+                        RelativeLayout.LayoutParams profilePicParam = new RelativeLayout.LayoutParams(pixelPerDp * 50, pixelPerDp * 50);
 
                         profilePicParam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
@@ -224,7 +234,6 @@ LinearLayout ll ;
 
         final android.support.v7.widget.Toolbar topBar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_top_nav);
 
-        topBar.setTitle("Notifications");
 
         toolbarNav navigation2 = new toolbarNav();
         navigation2.NOTIFICATION = true;

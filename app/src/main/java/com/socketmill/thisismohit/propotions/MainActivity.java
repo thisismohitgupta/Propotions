@@ -1,9 +1,7 @@
 package com.socketmill.thisismohit.propotions;
 
 
-
-
-
+import android.content.Intent;
 import android.os.Bundle;
 
 
@@ -44,8 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
+import com.parse.SaveCallback;
 import com.socketmill.thisismohit.propotions.Home.RecyclerAdapter;
 
 import com.socketmill.thisismohit.propotions.Home.RecyclerToListViewScrollListener;
@@ -71,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        overridePendingTransition(0, 0);
 
         setContentView(R.layout.activity_main);
         toolbarNav NavController = new toolbarNav();
@@ -90,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
 
-                        //displayafterQuery(list, didRunOnce);
+                        displayafterQuery(list, didRunOnce);
+
                     }
                 }
             }
         });
-
 
 
 
@@ -106,9 +104,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+
+        setIntent(intent);
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+
+        String reload = getIntent().getStringExtra("PleaseReload");
+        if (reload != null) {
+            Log.e("ERROR", reload);
+            didRunOnce = true;
+            ranonce = true;
+        }
 
 
         if (didRunOnce || ranonce) {
@@ -128,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             if (ll.getChildCount() > 0) {
-                              //  ll.removeAllViews();
+                                ll.removeAllViews();
                             }
                             displayafterQuery(list, didRunOnce);
                         }
@@ -150,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-        } else {
-
-            Toast.makeText(getApplicationContext(), "already ran once", Toast.LENGTH_SHORT).show();
         }
     }
 

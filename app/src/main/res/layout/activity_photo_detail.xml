@@ -2,32 +2,66 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.socketmill.thisismohit.propotions.Home.PhotoDetail">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_top_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/GreenTop"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PHOTO"
+            android:textSize="20sp"
+            android:textColor="@color/whitelikeabitcj"
+            android:layout_gravity="center"
+
+            />
+
+    </android.support.v7.widget.Toolbar>
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_above="@+id/toolbar_Bottom_photo"
+    android:layout_below="@+id/toolbar_top_photo">
     <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         xmlns:tools="http://schemas.android.com/tools">
-        <ImageView
+
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/ProfilePic"
             android:layout_alignParentTop="true"
             android:contentDescription="@string/app_name"
 
+
             />
-    <ImageView
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ProfilePic"
+            android:id="@+id/HolderOfMainImage">
+
+            <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/MainImage"
-        android:layout_below="@+id/ProfilePic"
+
         android:contentDescription="@string/app_name"
 
         />
 
 
-    <TextView
+        </RelativeLayout>
+
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/NameTag"
@@ -36,26 +70,62 @@
 
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/ProfilePic"
-        android:layout_above="@+id/MainImage"
+            android:layout_above="@+id/HolderOfMainImage"
         android:layout_marginBottom="20dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/HolderOfMainImage"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/mello">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/likeButton1"
+                android:src="@drawable/loving34"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/likeButtonCount"
+                android:layout_toEndOf="@id/likeButton1"
+                android:layout_toRightOf="@+id/likeButton1" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/commentButton1"
+                android:layout_toEndOf="@id/likeButtonCount"
+                android:layout_toRightOf="@+id/likeButtonCount"
+                android:src="@drawable/chat20"
+                android:layout_marginLeft="10dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shareButton"
+                android:layout_toEndOf="@id/commentButton1"
+                android:layout_toRightOf="@+id/commentButton1"
+                android:src="@drawable/share11"
+                android:layout_marginLeft="10dp" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/MainImage"
+            android:layout_below="@+id/mello"
             android:id="@+id/commentContainer"
             >
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="add a comment"
-                android:id="@+id/comment"
 
-
-                />
 
 
         </LinearLayout>
@@ -63,6 +133,85 @@
     </RelativeLayout>
 
     </ScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_Bottom_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/BlackBottom">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/house158"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/home" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/compass98"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/explore"
+                android:layout_toRightOf="@+id/home"
+
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/video28"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/video"
+                android:layout_toRightOf="@+id/explore"
+
+
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bells9"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="40dp"
+                android:id="@+id/notification"
+                android:layout_toRightOf="@+id/video"
+
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/profile10"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:id="@+id/profile"
+                android:layout_toRightOf="@+id/notification"
+
+
+                />
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
 
 
 </RelativeLayout>

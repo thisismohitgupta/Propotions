@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="GreenTop">#18ab42</color>
-    <color name="BlackBottom">#313835</color>
+    <color name="GreenTop">#357499</color>
+    <color name="BlackBottom">#50514F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="TopBar">#357499</color>
+    <color name="whitelikeabitcj">#fdfeff</color>
 </resources>

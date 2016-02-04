@@ -7,40 +7,90 @@
     android:id="@+id/RR"
     >
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_pic_thumb"
-        >
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/displayImages"
+    <de.hdodenhof.circleimageview.CircleImageView
 
-
-        />
-    </RelativeLayout>
-
-    <ImageView
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_pic_thumb"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+
 
 
 
         />
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/DisplayName"
 
+        android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/profile_pic_thumb"
         android:layout_toRightOf="@+id/profile_pic_thumb"
 
-         />
+        />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_pic_thumb"
+        android:id="@+id/mainimages">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/displayImages"
 
 
+            />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mainimages"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/likeButton"
+            android:src="@drawable/loving34"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/likeButtonCount"
+            android:layout_toEndOf="@id/likeButton"
+            android:layout_toRightOf="@+id/likeButton" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/commentButton"
+            android:layout_toEndOf="@id/likeButtonCount"
+            android:layout_toRightOf="@+id/likeButtonCount"
+            android:src="@drawable/chat20"
+            android:layout_marginLeft="10dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/shareButton"
+            android:layout_toEndOf="@id/commentButton"
+            android:layout_toRightOf="@+id/commentButton"
+            android:src="@drawable/share11"
+            android:layout_marginLeft="10dp" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

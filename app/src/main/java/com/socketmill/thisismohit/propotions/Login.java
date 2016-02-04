@@ -4,14 +4,18 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.util.LruCache;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -38,8 +42,9 @@ public class Login extends AppCompatActivity {
     CallbackManager callbackManager;
     String email;
     ProgressBar progressBar;
-    com.socketmill.thisismohit.propotions.widget.GifMovieView gifMovieView;
+    //com.socketmill.thisismohit.propotions.widget.GifMovieView gifMovieView;
 
+    VideoView videoView;
     @Override
     protected void onStart() {
         super.onStart();
@@ -53,6 +58,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         progressBar = (ProgressBar) findViewById(R.id.marker_progress_login);
@@ -62,9 +69,24 @@ public class Login extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "its visible ", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
         }
-        gifMovieView = (com.socketmill.thisismohit.propotions.widget.GifMovieView) findViewById(R.id.gifMovieView);
-        gifMovieView.setMinimumWidth(getApplicationContext().getResources().getDisplayMetrics().widthPixels);
-        gifMovieView.setMinimumHeight(getApplicationContext().getResources().getDisplayMetrics().heightPixels);
+        //  getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+
+        videoView = (VideoView) findViewById(R.id.videoView);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
+
+        String uilPath = "android.resource://" + getPackageName() + "/" + R.raw.untitled;
+        videoView.setVideoURI(Uri.parse(uilPath));
+        videoView.start();
+
+        //gifMovieView = (com.socketmill.thisismohit.propotions.widget.GifMovieView) findViewById(R.id.gifMovieView);
+        //gifMovieView.setMinimumWidth(getApplicationContext().getResources().getDisplayMetrics().widthPixels);
+        //gifMovieView.setMinimumHeight(getApplicationContext().getResources().getDisplayMetrics().heightPixels);
         toolbarNav NavController = new toolbarNav();
         NavController.checkIfLoggedIn(getApplicationContext(), MainActivity.class);
 

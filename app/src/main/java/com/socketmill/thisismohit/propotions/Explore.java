@@ -1,11 +1,14 @@
 package com.socketmill.thisismohit.propotions;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,6 +20,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.socketmill.thisismohit.propotions.Home.PhotoDetail;
+import com.socketmill.thisismohit.propotions.Home.commentDetail;
 import com.socketmill.thisismohit.propotions.background.ExploreImageAsync;
 
 import java.lang.ref.WeakReference;
@@ -31,6 +36,7 @@ public class Explore extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_explore);
         getSupportActionBar().hide();
 
@@ -50,7 +56,7 @@ public class Explore extends AppCompatActivity {
 
         MainQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
-            public void done(List<ParseObject> list, ParseException e) {
+            public void done(final List<ParseObject> list, ParseException e) {
 
                 if(e==null){
 
@@ -62,6 +68,7 @@ public class Explore extends AppCompatActivity {
                            // ParseObject photo = list.get(i).getParseObject("photo");
                             //text.setText(list.get(i).getObjectId());
 
+                            final int j = i;
 
 
                             LinearLayout Rl = new LinearLayout(getApplicationContext());
@@ -92,9 +99,26 @@ public class Explore extends AppCompatActivity {
 
                                 image0.setLayoutParams(ImageParams1);
 
+                                image0.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent i = new Intent(getApplicationContext(), PhotoDetail.class);
+                                        i.putExtra("PhotoId", list.get(j).getParseObject("photo").getObjectId());
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        getApplicationContext().startActivity(i);
+
+                                    }
+                                });
+
+
+
+
+
                                 ExploreImageAsync sync1 = new ExploreImageAsync(new WeakReference<ImageView>(image0), list.get(i).getParseObject("photo"), getApplicationContext());
                                 sync1.execute();
                                 Rl.addView(image0);
+
 
                             }
 
@@ -115,6 +139,19 @@ public class Explore extends AppCompatActivity {
                                 sync2.execute();
 
                                 Rl.addView(image1);
+
+
+                                image1.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent i = new Intent(getApplicationContext(), PhotoDetail.class);
+                                        i.putExtra("PhotoId", list.get(j + 1).getParseObject("photo").getObjectId());
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        getApplicationContext().startActivity(i);
+
+                                    }
+                                });
                             }
 
 
@@ -131,6 +168,17 @@ public class Explore extends AppCompatActivity {
                                 sync3.execute();
 
                                 Rl.addView(image2);
+                                image2.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent i = new Intent(getApplicationContext(), PhotoDetail.class);
+                                        i.putExtra("PhotoId", list.get(j + 2).getParseObject("photo").getObjectId());
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        getApplicationContext().startActivity(i);
+
+                                    }
+                                });
                             }
 
 //
@@ -175,14 +223,6 @@ public class Explore extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-
-
-
 
 
     }

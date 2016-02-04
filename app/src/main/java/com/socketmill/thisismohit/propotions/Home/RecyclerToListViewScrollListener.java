@@ -11,14 +11,23 @@ import android.widget.AbsListView;
  */
 public class RecyclerToListViewScrollListener extends LinearLayoutManager {
 
-    public RecyclerToListViewScrollListener(Context context) {
-        super(context);
+
+    Float pixelPerDp;
+
+    public RecyclerToListViewScrollListener(Context _context) {
+        super(_context);
+        pixelPerDp = _context.getResources().getDisplayMetrics().density + 0.5f;
+
+
+
     }
 
     @Override
     protected int getExtraLayoutSpace(RecyclerView.State state) {
 
        // Log.e("LAYOUT",String.valueOf(super.getExtraLayoutSpace(state)));
-       return 1000  ;
+
+
+        return (int) (pixelPerDp * 1000);
     }
 }

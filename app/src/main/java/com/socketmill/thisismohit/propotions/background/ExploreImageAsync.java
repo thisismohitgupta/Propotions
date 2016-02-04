@@ -13,6 +13,7 @@ import com.parse.GetFileCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.socketmill.thisismohit.propotions.JniBitmapHolder;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -54,15 +55,28 @@ public class ExploreImageAsync extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
 
-        ParseFile bits = photoObject.getParseFile("thumbnail");
-        try {
-            byte[] bytes = bits.getData();
-            bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        if (photoObject != null) {
+            ParseFile bits = photoObject.getParseFile("thumbnail");
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            if (bits != null) {
+                try {
+                    byte[] bytes = bits.getData();
+                    bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    JniBitmapHolder holder = new JniBitmapHolder();
+                    holder.storeBitmap(bmp);
+                    float width = context.getResources().getDisplayMetrics().widthPixels;
+
+                    int imageWidth = (int) (width / 3);
+
+                    holder.scaleBitmap(imageWidth, imageWidth, JniBitmapHolder.ScaleMethod.BilinearInterpolation);
+
+                    bmp = holder.getBitmapAndFree();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
-
         return null;
     }
 }
